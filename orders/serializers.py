@@ -71,3 +71,10 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['order_code', 'customer_name', 'status', 'status_display', 'total_price', 'items', 'created_at'] 
+
+
+class OrderStatusUpdateSerializer(serializers.ModelSerializer):
+    """سریالایزر برای تغییر وضعیت سفارش توسط باریستا"""
+    class Meta:
+        model = Order
+        fields = ['status']

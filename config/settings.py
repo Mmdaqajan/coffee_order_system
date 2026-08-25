@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     # Third Party Apps
     'rest_framework',
+    'corsheaders',         # اضافه شد
+    'drf_spectacular',    # اضافه شد
 
     # Local Apps
     'accounts',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # حتماً بالاترین خط باشد
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -137,3 +140,20 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+
+# REST Framework Configuration 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Swagger UI Configuration 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Cafe Management System API',
+    'DESCRIPTION': 'API های پروژه مدیریت سفارشات و منوی کافه',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+# CORS Configuration (اجازه دادن به فرانت‌اند برای ارتباط با API)
+CORS_ALLOW_ALL_ORIGINS = True  # در محیط توسعه همه مبداها مجاز هستند

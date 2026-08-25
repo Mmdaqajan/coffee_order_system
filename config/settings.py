@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 from decouple import config
 from datetime import timedelta
 
@@ -76,12 +77,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get('DB_HOST'):
+    # تنظیمات هنگام اجرا در Docker (PostgreSQL)
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.environ.get('DB_NAME', 'cafe_db'),
+            'USER': os.environ.get('DB_USER', 'cafe_user'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'cafe_password'),
+            'HOST': os.environ.get('DB_HOST', 'db'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
     }
-}
+else:
+    # تنظیمات هنگام اجرای مستقیم رو سیستم (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

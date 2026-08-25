@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: cafe_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=cafe_db
+      - POSTGRES_USER=cafe_user
+      - POSTGRES_PASSWORD=cafe_password
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    container_name: cafe_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=django-insecure-docker-secret-key-for-dev
+      - DEBUG=1
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=cafe_db
+      - DB_USER=cafe_user
+      - DB_PASSWORD=cafe_password
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

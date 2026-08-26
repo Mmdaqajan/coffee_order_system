@@ -668,3 +668,17 @@ footer p {
         font-size: 32px;
     }
 }
+
+.loading,
+.error,
+.empty {
+    width: 100%;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+}
+
+.error {
+    color: #a33;
+}

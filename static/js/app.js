@@ -1,36 +1,261 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const categories = document.querySelectorAll(".category");
+    const productsContainer = document.getElementById("products-container");
+    const categoriesContainer = document.querySelector(".category-list");
 
-    categories.forEach(category => {
+    let allProducts = [];
 
-        category.addEventListener("click", () => {
 
-            categories.forEach(item => {
-                item.classList.remove("active");
+    // -----------------------------
+    // Fetch menu from Django API
+    // -----------------------------
+
+    async function loadMenu() {
+
+        try {
+
+            const response = await fetch("/api/menu/");
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            const categories = await response.json();
+
+            allProducts = [];
+
+            categories.forEach(category => {
+
+                category.products.forEach(product => {
+
+                    allProducts.push({
+                        ...product,
+                        categoryTitle: category.title
+                    });
+
+                });
+
             });
 
-            category.classList.add("active");
+            renderCategories(categories);
+            renderProducts(allProducts);
 
+        } catch (error) {
+
+            console.error("Failed to load menu:", error);
+
+            productsContainer.innerHTML = `
+                <p class="error">
+                    Failed to load menu. Please try again.
+                </p>
+            `;
+        }
+    }
+
+
+    // -----------------------------
+    // Render categories
+    // -----------------------------
+
+    function renderCategories(categories) {
+
+        categoriesContainer.innerHTML = `
+            <button class="category active" data-category="all">
+                All
+            </button>
+        `;
+
+        categories.forEach(category => {
+
+            const button = document.createElement("button");
+
+            button.className = "category";
+
+            button.dataset.category = category.id;
+
+            button.textContent = category.title;
+
+            categoriesContainer.appendChild(button);
         });
 
-    });
+
+        // Category click
+
+        const categoryButtons =
+            document.querySelectorAll(".category");
+
+        categoryButtons.forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                categoryButtons.forEach(item => {
+                    item.classList.remove("active");
+                });
+
+                button.classList.add("active");
+
+                const categoryId = button.dataset.category;
+
+                if (categoryId === "all") {
+
+                    renderProducts(allProducts);
+
+                } else {
+
+                    const filteredProducts =
+                        allProducts.filter(
+                            product =>
+                                String(product.category) ===
+                                String(categoryId)
+                        );
+
+                    renderProducts(filteredProducts);
+                }
+            });
+        });
+    }
 
 
-    const addButtons = document.querySelectorAll(".add-button");
+    // -----------------------------
+    // Render products
+    // -----------------------------
 
-    addButtons.forEach(button => {
+    function renderProducts(products) {
 
-        button.addEventListener("click", () => {
+        productsContainer.innerHTML = "";
 
-            button.textContent = "✓";
+        if (products.length === 0) {
 
-            setTimeout(() => {
-                button.textContent = "+";
-            }, 800);
+            productsContainer.innerHTML = `
+                <p class="empty">
+                    No products available.
+                </p>
+            `;
 
+            return;
+        }
+
+
+        products.forEach(product => {
+
+            const card = document.createElement("article");
+
+            card.className = "product-card";
+
+
+            card.innerHTML = `
+
+                <div class="product-image">
+                    ☕
+                </div>
+
+                <div class="product-info">
+
+                    <div class="product-title">
+
+                        <h3>
+                            ${escapeHTML(product.title)}
+                        </h3>
+
+                    </div>
+
+
+                    <p>
+                        ${escapeHTML(
+                            product.description || "Freshly prepared for you."
+                        )}
+                    </p>
+
+
+                    <div class="product-footer">
+
+                        <strong>
+                            ${formatPrice(product.price)} T
+                        </strong>
+
+                        <button
+                            class="add-button"
+                            data-product-id="${product.id}"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+
+            productsContainer.appendChild(card);
         });
 
-    });
+
+        attachAddButtons();
+    }
+
+
+    // -----------------------------
+    // Add button
+    // -----------------------------
+
+    function attachAddButtons() {
+
+        const buttons =
+            document.querySelectorAll(".add-button");
+
+
+        buttons.forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const productId =
+                    button.dataset.productId;
+
+                console.log(
+                    "Product added:",
+                    productId
+                );
+
+
+                button.textContent = "✓";
+
+
+                setTimeout(() => {
+                    button.textContent = "+";
+                }, 800);
+
+            });
+
+        });
+    }
+
+
+    // -----------------------------
+    // Format price
+    // -----------------------------
+
+    function formatPrice(price) {
+
+        return Number(price).toLocaleString("en-US");
+    }
+
+
+    // -----------------------------
+    // Basic HTML escaping
+    // -----------------------------
+
+    function escapeHTML(value) {
+
+        const div = document.createElement("div");
+
+        div.textContent = value;
+
+        return div.innerHTML;
+    }
+
+
+    // Start
+
+    loadMenu();
 
 });

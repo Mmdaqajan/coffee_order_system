@@ -10,7 +10,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'price', 'is_available', 'created_at')
+    list_display = ('title','image', 'category', 'price', 'is_available', 'created_at')
     list_filter = ('is_available', 'category')
     search_fields = ('title', 'description')
     list_editable = ('price', 'is_available')  # تغییر سریع قیمت و موجودی مستقیماً از لیست محصولات

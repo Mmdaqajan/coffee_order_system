@@ -28,6 +28,12 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name="قیمت (تومان)")
     is_available = models.BooleanField(default=True, verbose_name="موجود / ناموجود")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
+    image = models.ImageField(
+    upload_to="products/",
+    blank=True,
+    null=True,
+    verbose_name="تصویر محصول"
+)
 
     class Meta:
         verbose_name = "محصول"

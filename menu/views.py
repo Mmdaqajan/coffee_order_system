@@ -1,5 +1,7 @@
 from rest_framework.generics import ListAPIView
 from .models import Category
+from django.shortcuts import render
+
 from .serializers import CategorySerializer
 
 class MenuListAPIView(ListAPIView):
@@ -7,4 +9,7 @@ class MenuListAPIView(ListAPIView):
     queryset = Category.objects.filter(is_active=True).prefetch_related('products')
     serializer_class = CategorySerializer
 
-    
+
+
+def home(request):
+    return render(request, "index.html")

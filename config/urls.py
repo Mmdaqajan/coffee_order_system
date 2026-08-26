@@ -8,9 +8,13 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", include("menu.urls")),
+
+
     path('api/menu/', include('menu.urls')),
     path('api/orders/', include('orders.urls')),
     path('api/accounts/', include('accounts.urls')),
+
 
     # Swagger Documentation URLs
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

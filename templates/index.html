@@ -1,0 +1,317 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Coffee House | Fresh Coffee & More</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="container nav-content">
+        <a href="#" class="logo">
+            <span>☕</span>
+            Coffee House
+        </a>
+
+        <nav>
+            <a href="#menu">Menu</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <a href="#menu" class="nav-button">
+            Order Now
+        </a>
+    </div>
+</header>
+
+
+<main>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container hero-content">
+
+            <div class="hero-text">
+                <span class="eyebrow">FRESHLY BREWED EVERY DAY</span>
+
+                <h1>
+                    Your perfect
+                    <span>coffee</span>
+                    is waiting.
+                </h1>
+
+                <p>
+                    Carefully selected beans, freshly prepared drinks
+                    and delicious treats. Order your favorite coffee
+                    in just a few clicks.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#menu" class="btn btn-primary">
+                        Explore Menu
+                    </a>
+
+                    <a href="#about" class="btn btn-secondary">
+                        Our Story
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div>
+                        <strong>4.9</strong>
+                        <span>Customer Rating</span>
+                    </div>
+
+                    <div>
+                        <strong>20+</strong>
+                        <span>Menu Items</span>
+                    </div>
+
+                    <div>
+                        <strong>10 min</strong>
+                        <span>Average Order</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="hero-image">
+                <div class="coffee-card">
+                    <div class="coffee-icon">☕</div>
+
+                    <span>Today's Favorite</span>
+
+                    <h3>Cappuccino</h3>
+
+                    <p>
+                        Rich espresso with creamy steamed milk.
+                    </p>
+
+                    <div class="coffee-bottom">
+                        <strong>120,000 T</strong>
+                        <button>+</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- CATEGORIES -->
+    <section class="categories" id="menu">
+        <div class="container">
+
+            <div class="section-header">
+                <div>
+                    <span class="eyebrow">OUR MENU</span>
+                    <h2>What are you craving?</h2>
+                </div>
+
+                <p>
+                    Choose from our selection of freshly prepared
+                    drinks and delicious treats.
+                </p>
+            </div>
+
+
+            <div class="category-list">
+                <button class="category active">All</button>
+                <button class="category">Coffee</button>
+                <button class="category">Cold Drinks</button>
+                <button class="category">Tea</button>
+                <button class="category">Desserts</button>
+            </div>
+
+
+            <!-- PRODUCTS -->
+            <div class="products">
+
+                <article class="product-card">
+                    <div class="product-image coffee-bg">
+                        ☕
+                    </div>
+
+                    <div class="product-info">
+                        <div class="product-title">
+                            <h3>Cappuccino</h3>
+                            <span>Popular</span>
+                        </div>
+
+                        <p>
+                            Espresso, steamed milk and creamy foam.
+                        </p>
+
+                        <div class="product-footer">
+                            <strong>120,000 T</strong>
+                            <button class="add-button">+</button>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="product-card">
+                    <div class="product-image espresso-bg">
+                        ☕
+                    </div>
+
+                    <div class="product-info">
+                        <div class="product-title">
+                            <h3>Espresso</h3>
+                        </div>
+
+                        <p>
+                            Strong and rich espresso made from fresh beans.
+                        </p>
+
+                        <div class="product-footer">
+                            <strong>80,000 T</strong>
+                            <button class="add-button">+</button>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="product-card">
+                    <div class="product-image latte-bg">
+                        🥛
+                    </div>
+
+                    <div class="product-info">
+                        <div class="product-title">
+                            <h3>Latte</h3>
+                        </div>
+
+                        <p>
+                            Smooth espresso with silky steamed milk.
+                        </p>
+
+                        <div class="product-footer">
+                            <strong>130,000 T</strong>
+                            <button class="add-button">+</button>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="product-card">
+                    <div class="product-image cake-bg">
+                        🍰
+                    </div>
+
+                    <div class="product-info">
+                        <div class="product-title">
+                            <h3>Cheesecake</h3>
+                            <span>New</span>
+                        </div>
+
+                        <p>
+                            Creamy cheesecake with a delicious biscuit base.
+                        </p>
+
+                        <div class="product-footer">
+                            <strong>150,000 T</strong>
+                            <button class="add-button">+</button>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ABOUT -->
+    <section class="about" id="about">
+        <div class="container about-content">
+
+            <div class="about-box">
+                <span>EST. 2024</span>
+                <strong>☕</strong>
+                <h3>Coffee House</h3>
+            </div>
+
+            <div class="about-text">
+                <span class="eyebrow">WHY COFFEE HOUSE?</span>
+
+                <h2>
+                    Simple coffee.
+                    <br>
+                    Great moments.
+                </h2>
+
+                <p>
+                    We believe great coffee doesn't need to be complicated.
+                    We focus on quality ingredients, freshly roasted beans
+                    and a simple ordering experience.
+                </p>
+
+                <a href="#menu" class="text-link">
+                    Explore our menu →
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container cta-content">
+            <div>
+                <span class="eyebrow">READY TO ORDER?</span>
+                <h2>Your next coffee is one click away.</h2>
+            </div>
+
+            <a href="#menu" class="btn btn-light">
+                Start Ordering →
+            </a>
+        </div>
+    </section>
+
+</main>
+
+
+<footer id="contact">
+    <div class="container footer-content">
+
+        <div>
+            <a href="#" class="logo">
+                <span>☕</span>
+                Coffee House
+            </a>
+
+            <p>
+                Fresh coffee. Good moments.
+            </p>
+        </div>
+
+        <div class="footer-links">
+            <a href="#menu">Menu</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+
+        <p class="copyright">
+            © 2026 Coffee House
+        </p>
+
+    </div>
+</footer>
+
+
+<script src="{% static 'js/app.js' %}"></script>
+
+</body>
+</html>

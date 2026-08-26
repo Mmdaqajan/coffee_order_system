@@ -4,9 +4,14 @@ from django.shortcuts import render
 from .serializers import CategorySerializer, ProductSerializer
 
 class MenuListAPIView(ListAPIView):
-    """نمایش لیست کامل منوی کافه (دسته‌بندی‌ها به همراه محصولات موجود)"""
-    queryset = Category.objects.filter(is_active=True).prefetch_related('products')
     serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.prefetch_related(
+            "products"
+        ).filter(
+            products__is_available=True
+        ).distinct()
 
 
 
@@ -16,5 +21,14 @@ class ProductListAPIView(ListAPIView):
 
 
 
+
 def home(request):
-    return render(request, "index.html")
+    products = Product.objects.filter(is_available=True).select_related("category")
+
+    return render(
+        request,
+        "index.html",
+        {
+            "products": products,
+        }
+    )

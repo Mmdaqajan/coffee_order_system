@@ -135,13 +135,51 @@
 
 
             <!-- PRODUCTS -->
-            <div class="products">
+<div class="products" id="products-container">
 
-                <div class="products" id="products-container">
-                    <p class="loading">Loading menu...</p>
+    {% for product in products %}
+
+        <article class="product-card">
+
+            <div class="product-image">
+                ☕
+            </div>
+
+            <div class="product-info">
+
+                <h3>
+                    {{ product.title }}
+                </h3>
+
+                <p>
+                    {{ product.description|default:"یک انتخاب خوشمزه برای شما" }}
+                </p>
+
+                <div class="product-footer">
+
+                    <strong>
+                        {{ product.price|floatformat:0 }} تومان
+                    </strong>
+
+                    <button class="add-button">
+                        +
+                    </button>
+
                 </div>
 
             </div>
+
+        </article>
+
+    {% empty %}
+
+        <p class="empty">
+            محصولی یافت نشد.
+        </p>
+
+    {% endfor %}
+
+</div>
 
         </div>
     </section>

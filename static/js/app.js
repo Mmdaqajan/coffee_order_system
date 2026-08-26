@@ -120,79 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render products
     // -----------------------------
 
-    function renderProducts(products) {
-
-        productsContainer.innerHTML = "";
-
-        if (products.length === 0) {
-
-            productsContainer.innerHTML = `
-                <p class="empty">
-                    No products available.
-                </p>
-            `;
-
-            return;
-        }
-
-
-        products.forEach(product => {
-
-            const card = document.createElement("article");
-
-            card.className = "product-card";
-
-
-            card.innerHTML = `
-
-                <div class="product-image">
-                    ☕
-                </div>
-
-                <div class="product-info">
-
-                    <div class="product-title">
-
-                        <h3>
-                            ${escapeHTML(product.title)}
-                        </h3>
-
-                    </div>
-
-
-                    <p>
-                        ${escapeHTML(
-                            product.description || "Freshly prepared for you."
-                        )}
-                    </p>
-
-
-                    <div class="product-footer">
-
-                        <strong>
-                            ${formatPrice(product.price)} T
-                        </strong>
-
-                        <button
-                            class="add-button"
-                            data-product-id="${product.id}"
-                        >
-                            +
-                        </button>
-
-                    </div>
-
-                </div>
-            `;
-
-
-            productsContainer.appendChild(card);
-        });
-
-
-        attachAddButtons();
-    }
-
+   
 
     // -----------------------------
     // Add button
@@ -256,6 +184,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Start
 
-    loadMenu();
 
 });

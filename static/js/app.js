@@ -258,9 +258,50 @@ function updateCartUI() {
     let count = 0;
     let total = 0;
 
+    const cartItems =
+        document.getElementById("cart-items");
+
+    cartItems.innerHTML = "";
+
     Object.values(cart).forEach(item => {
+
         count += item.quantity;
         total += item.price * item.quantity;
+
+        const itemElement =
+            document.createElement("div");
+
+        itemElement.className = "cart-item";
+
+        itemElement.innerHTML = `
+            <span>${item.title}</span>
+
+            <div>
+                <button
+                    class="cart-minus"
+                    data-id="${item.id}"
+                >
+                    −
+                </button>
+
+                <span>${item.quantity}</span>
+
+                <button
+                    class="cart-plus"
+                    data-id="${item.id}"
+                >
+                    +
+                </button>
+            </div>
+
+            <strong>
+                ${(item.price * item.quantity)
+                    .toLocaleString("fa-IR")}
+                تومان
+            </strong>
+        `;
+
+        cartItems.appendChild(itemElement);
     });
 
     document.getElementById("cart-count").textContent =
@@ -272,6 +313,39 @@ function updateCartUI() {
 
 
 document.addEventListener("click", event => {
+
+
+    const plus =
+        event.target.closest(".cart-plus");
+
+    const minus =
+        event.target.closest(".cart-minus");
+
+
+    if (plus) {
+
+        const id = plus.dataset.id;
+
+        cart[id].quantity++;
+
+        saveCart();
+        updateCartUI();
+    }
+
+
+    if (minus) {
+
+        const id = minus.dataset.id;
+
+        cart[id].quantity--;
+
+        if (cart[id].quantity <= 0) {
+            delete cart[id];
+        }
+
+        saveCart();
+        updateCartUI();
+    }
 
     const button =
         event.target.closest(".add-button");

@@ -1,0 +1,91 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>سبد خرید | Coffee Shop</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <main class="cart-page">
+
+        <div class="cart-container">
+
+            <div class="cart-header">
+
+                <a href="/" class="back-link">
+                    ← بازگشت به منو
+                </a>
+
+                <h1>سبد خرید</h1>
+
+            </div>
+
+
+            <div id="cart-page-items">
+
+                <!-- محصولات با JavaScript اینجا قرار می‌گیرند -->
+
+            </div>
+
+
+            <div id="cart-empty" class="cart-empty">
+
+                <div class="empty-icon">
+                    🛒
+                </div>
+
+                <h2>سبد خرید خالی است</h2>
+
+                <p>
+                    هنوز محصولی به سبد خرید اضافه نکرده‌اید.
+                </p>
+
+                <a href="/" class="back-to-menu">
+                    مشاهده منو
+                </a>
+
+            </div>
+
+
+            <div id="cart-checkout" class="cart-checkout">
+
+                <div class="cart-total-row">
+
+                    <span>
+                        مبلغ کل
+                    </span>
+
+                    <strong id="page-cart-total">
+                        0 تومان
+                    </strong>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="checkout-button"
+                    id="checkout-button"
+                >
+                    ادامه و ثبت سفارش
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script src="{% static 'js/cart.js' %}"></script>
+
+</body>
+
+</html>

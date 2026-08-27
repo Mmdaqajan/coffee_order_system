@@ -3,7 +3,7 @@ from .models import Category, Product
 from django.shortcuts import render
 from .serializers import CategorySerializer, ProductSerializer
 
-class MenuListAPIView(generics.ListAPIView):
+class MenuListAPIView(ListAPIView):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
@@ -67,3 +67,8 @@ def products_partial(request):
             "products": products
         }
     )
+
+
+
+    def cart(request):
+    return render(request, "cart.html")

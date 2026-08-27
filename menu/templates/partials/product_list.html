@@ -53,11 +53,15 @@
                     +
                 </button>
             {% else %}
-                <button
-                    type="button"
-                    class="add-button"
-                    disabled
-                >
+<button
+    type="button"
+    class="add-button"
+    data-product-id="{{ product.id }}"
+    data-product-title="{{ product.title }}"
+    data-product-price="{{ product.price }}"
+>
+    +
+</button>
                     ناموجود
                 </button>
             {% endif %}

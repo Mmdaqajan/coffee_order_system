@@ -240,4 +240,76 @@ categoryLinks.forEach(link => {
 
 });
 
+let cart = JSON.parse(
+    localStorage.getItem("cart") || "{}"
+);
+
+
+function saveCart() {
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
+}
+
+
+function updateCartUI() {
+
+    let count = 0;
+    let total = 0;
+
+    Object.values(cart).forEach(item => {
+        count += item.quantity;
+        total += item.price * item.quantity;
+    });
+
+    document.getElementById("cart-count").textContent =
+        count;
+
+    document.getElementById("cart-total").textContent =
+        total.toLocaleString("fa-IR");
+}
+
+
+document.addEventListener("click", event => {
+
+    const button =
+        event.target.closest(".add-button");
+
+    if (!button) return;
+
+    const id =
+        button.dataset.productId;
+
+    const title =
+        button.dataset.productTitle;
+
+    const price =
+        Number(button.dataset.productPrice);
+
+
+    if (!cart[id]) {
+
+        cart[id] = {
+            id: id,
+            title: title,
+            price: price,
+            quantity: 1
+        };
+
+    } else {
+
+        cart[id].quantity++;
+
+    }
+
+
+    saveCart();
+    updateCartUI();
+
+});
+
+
+updateCartUI();
+
 });

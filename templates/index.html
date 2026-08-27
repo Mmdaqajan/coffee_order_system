@@ -125,72 +125,30 @@
             </div>
 
 
-            <div class="category-list">
-                <button class="category active">All</button>
-                <button class="category">Coffee</button>
-                <button class="category">Cold Drinks</button>
-                <button class="category">Tea</button>
-                <button class="category">Desserts</button>
-            </div>
+<div class="category-list">
 
+    <a href="/" class="category active">
+        همه
+    </a>
 
-            <!-- PRODUCTS -->
-<div class="products" id="products-container">
+    {% for category in categories %}
 
-    {% for product in products %}
-
-        <article class="product-card">
-
-            <div class="product-image">
-
-                {% if product.image %}
-                    <img
-                        src="{{ product.image.url }}"
-                        alt="{{ product.title }}"
-                    >
-                {% else %}
-                    <span>☕</span>
-                {% endif %}
-
-            </div>
-
-            <div class="product-info">
-
-                <h3>
-                    {{ product.title }}
-                </h3>
-
-                <p>
-                    {{ product.description|default:"یک انتخاب خوشمزه برای شما" }}
-                </p>
-
-                <div class="product-footer">
-
-                    <strong>
-                        {{ product.price|floatformat:0 }} تومان
-                    </strong>
-
-                    <button class="add-button">
-                        +
-                    </button>
-
-                </div>
-
-            </div>
-
-        </article>
-
-    {% empty %}
-
-        <p class="empty">
-            محصولی یافت نشد.
-        </p>
+        <a
+            href="?category={{ category.id }}"
+            class="category"
+        >
+            {{ category.title }}
+        </a>
 
     {% endfor %}
 
-</div>
+    </div>
 
-        </div>
+
+            <!-- PRODUCTS -->
+            <div class="products" id="products-container">
+                {% include "partials/product_list.html" %}
+            </div>
     </section>
 
 

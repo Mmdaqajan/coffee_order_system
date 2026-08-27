@@ -1,0 +1,78 @@
+{% for product in products %}
+
+<article class="product-card">
+
+    <div class="product-image">
+        {% if product.image %}
+            <img
+                src="{{ product.image.url }}"
+                alt="{{ product.title }}"
+                loading="lazy"
+            >
+        {% else %}
+            <div class="no-image">
+                ☕
+            </div>
+        {% endif %}
+
+        {% if not product.is_available %}
+            <span class="unavailable">
+                ناموجود
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="product-info">
+
+        <div class="product-header">
+            <h3>{{ product.title }}</h3>
+            <span class="category-name">
+                {{ product.category.title }}
+            </span>
+        </div>
+
+        {% if product.description %}
+            <p class="product-description">
+                {{ product.description }}
+            </p>
+        {% endif %}
+
+        <div class="product-footer">
+
+            <span class="product-price">
+                {{ product.price|floatformat:0 }}
+                تومان
+            </span>
+
+            {% if product.is_available %}
+                <button
+                    type="button"
+                    class="add-button"
+                    data-product-id="{{ product.id }}"
+                >
+                    +
+                </button>
+            {% else %}
+                <button
+                    type="button"
+                    class="add-button"
+                    disabled
+                >
+                    ناموجود
+                </button>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</article>
+
+{% empty %}
+
+<div class="empty-products">
+    <span>☕</span>
+    <p>محصولی در این دسته وجود ندارد.</p>
+</div>
+
+{% endfor %}

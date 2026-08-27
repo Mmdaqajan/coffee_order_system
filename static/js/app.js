@@ -172,17 +172,72 @@ document.addEventListener("DOMContentLoaded", () => {
     // Basic HTML escaping
     // -----------------------------
 
-    function escapeHTML(value) {
+    // function escapeHTML(value) {
 
-        const div = document.createElement("div");
+    //     const div = document.createElement("div");
 
-        div.textContent = value;
+    //     div.textContent = value;
 
-        return div.innerHTML;
-    }
+    //     return div.innerHTML;
+    // }
 
 
     // Start
+// codes to load products by filter without reloading the page
+const categoryLinks =document.querySelectorAll(".category");
 
+const productsContainer2 =document.getElementById("products-container");
+
+
+categoryLinks.forEach(link => {
+
+    link.addEventListener("click", async event => {
+
+        event.preventDefault();
+
+        categoryLinks.forEach(item => {
+            item.classList.remove("active");
+        });
+
+        link.classList.add("active");
+
+
+        const url = new URL(
+            link.href,
+            window.location.origin
+        );
+
+        const category =
+            url.searchParams.get("category");
+
+
+        const endpoint = category
+            ? `/products/?category=${category}`
+            : "/products/";
+
+
+        try {
+
+            const response =
+                await fetch(endpoint);
+
+            if (!response.ok) {
+                throw new Error("Request failed");
+            }
+
+            const html =
+                await response.text();
+
+            productsContainer2.innerHTML = html;
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    });
+
+});
 
 });

@@ -13,7 +13,7 @@
     >
 
     <title>
-        پیگیری سفارش | Coffee Shop
+        پیگیری سفارش | Coffee House
     </title>
 
     <link
@@ -26,70 +26,73 @@
 
 <body>
 
-    <main class="tracking-page">
+<main class="tracking-page">
 
-        <div class="tracking-container">
+    <div class="tracking-container">
 
-            <a
-                href="/"
-                class="back-link"
-            >
-                ← بازگشت به منو
-            </a>
-
-
-            <div class="tracking-header">
-
-                <h1>
-                    پیگیری سفارش
-                </h1>
-
-                <p>
-                    کد سفارش خود را وارد کنید
-                </p>
-
-            </div>
+        <a
+            href="/"
+            class="back-link"
+        >
+            ← بازگشت به منو
+        </a>
 
 
-            <form
-                id="tracking-form"
-            >
+        <div class="tracking-header">
 
-                <div class="tracking-input">
-
-                    <input
-                        type="text"
-                        id="order-code"
-                        placeholder="مثلاً 4827"
-                        autocomplete="off"
-                        required
-                    >
+            <h1>
+                پیگیری سفارش
+            </h1>
 
 
-                    <button
-                        type="submit"
-                    >
-                        پیگیری
-                    </button>
-
-                </div>
-
-            </form>
-
-
-            <div
-                id="tracking-result"
-                class="tracking-result"
-            ></div>
+            <p>
+                کد سفارش خود را وارد کنید
+            </p>
 
         </div>
 
-    </main>
+
+        <form
+            id="tracking-form"
+        >
+
+            <div class="tracking-input">
+
+                <input
+                    type="number"
+                    id="order-code"
+                    placeholder="کد سفارش"
+                    min="1"
+                    required
+                >
 
 
-    <script
-        src="{% static 'js/order-tracking.js' %}"
-    ></script>
+                <button
+                    type="submit"
+                >
+                    پیگیری
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div
+            id="tracking-result"
+            class="tracking-result"
+        >
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script
+    src="{% static 'js/order-tracking.js' %}"
+></script>
 
 </body>
 

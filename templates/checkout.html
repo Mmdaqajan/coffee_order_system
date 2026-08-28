@@ -4,6 +4,7 @@
 <html lang="fa" dir="rtl">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,13 +12,17 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>ثبت سفارش | Coffee Shop</title>
+    <title>
+        ثبت سفارش | Coffee House
+    </title>
 
     <link
         rel="stylesheet"
         href="{% static 'css/style.css' %}"
     >
+
 </head>
+
 
 <body>
 
@@ -27,9 +32,13 @@
 
         <div class="checkout-header">
 
-            <a href="/cart/" class="back-link">
+            <a
+                href="/cart/"
+                class="back-link"
+            >
                 ← بازگشت به سبد خرید
             </a>
+
 
             <h1>
                 ثبت سفارش
@@ -44,35 +53,27 @@
                 اطلاعات سفارش
             </h2>
 
-            <form id="checkout-form">
+
+            <form
+                id="checkout-form"
+            >
 
                 <div class="form-group">
 
-                    <label for="customer-name">
+                    <label
+                        for="customer-name"
+                    >
                         نام شما
                     </label>
+
 
                     <input
                         type="text"
                         id="customer-name"
                         name="customer_name"
                         placeholder="نام خود را وارد کنید"
+                        autocomplete="name"
                         required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    {% comment %} <label for="table-number">
-                        شماره میز
-                    </label> {% endcomment %}
-
-                    <input
-                        type="number"
-                        id="table-number"
-                        name="table_number"
                     >
 
                 </div>
@@ -82,7 +83,14 @@
                     خلاصه سفارش
                 </h2>
 
-                <div id="checkout-items"></div>
+
+                <div
+                    id="checkout-items"
+                >
+
+                    <!-- Cart items -->
+
+                </div>
 
 
                 <div class="checkout-total">
@@ -91,7 +99,10 @@
                         مبلغ نهایی
                     </span>
 
-                    <strong id="checkout-total">
+
+                    <strong
+                        id="checkout-total"
+                    >
                         0 تومان
                     </strong>
 
@@ -121,7 +132,9 @@
 </main>
 
 
-<script src="{% static 'js/checkout.js' %}"></script>
+<script
+    src="{% static 'js/checkout.js' %}"
+></script>
 
 </body>
 

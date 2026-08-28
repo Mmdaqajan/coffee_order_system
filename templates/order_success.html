@@ -13,7 +13,7 @@
     >
 
     <title>
-        سفارش ثبت شد | Coffee Shop
+        سفارش ثبت شد | Coffee House
     </title>
 
     <link
@@ -26,95 +26,90 @@
 
 <body>
 
-    <main class="success-page">
+<main class="success-page">
 
-        <div class="success-card">
+    <div class="success-card">
 
-            <div class="success-icon">
-                ✓
-            </div>
-
-
-            <h1>
-                سفارش شما ثبت شد 🎉
-            </h1>
+        <div class="success-icon">
+            ✓
+        </div>
 
 
-            <p>
-                سفارش شما با موفقیت ثبت شد.
-            </p>
+        <h1>
+            سفارش شما با موفقیت ثبت شد 🎉
+        </h1>
 
 
-            <div class="order-code-box">
-
-                <span>
-                    کد سفارش
-                </span>
+        <p>
+            سفارش شما با موفقیت در سیستم ثبت شد.
+        </p>
 
 
-                <strong id="order-code">
-                    ---
-                </strong>
+        <div class="order-code-box">
 
-            </div>
-
-
-            <p class="success-status">
-
-                وضعیت سفارش:
-
-                <strong>
-                    در انتظار بررسی
-                </strong>
-
-            </p>
+            <span>
+                کد سفارش
+            </span>
 
 
-            <div class="success-actions">
-
-                <a
-                    href="/"
-                    class="back-to-menu"
-                >
-                    بازگشت به منو
-                </a>
-
-
-                <a
-                    href="/orders/"
-                    class="track-order"
-                >
-                    پیگیری سفارش
-                </a>
-
-            </div>
+            <strong id="order-code">
+                ---
+            </strong>
 
         </div>
 
-    </main>
+
+        <p>
+            کد سفارش خود را نگه دارید تا بتوانید
+            وضعیت سفارش را پیگیری کنید.
+        </p>
 
 
-    <script>
+        <div class="success-actions">
 
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-
-        const orderCode =
-            params.get("code");
+            <a
+                href="/orders/"
+                class="track-order"
+            >
+                پیگیری سفارش
+            </a>
 
 
-        if (orderCode) {
+            <a
+                href="/"
+                class="back-to-menu"
+            >
+                بازگشت به منو
+            </a>
 
-            document.getElementById(
-                "order-code"
-            ).textContent = orderCode;
+        </div>
 
-        }
+    </div>
 
-    </script>
+</main>
+
+
+<script>
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const code =
+        params.get("code");
+
+
+    if (code) {
+
+        document.getElementById(
+            "order-code"
+        ).textContent = code;
+
+    }
+
+</script>
 
 </body>
 

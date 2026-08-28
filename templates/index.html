@@ -1,45 +1,511 @@
 {% load static %}
 
-<section class="menu-section">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 
-    <div
-        class="category-list"
-        id="category-list"
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
     >
-        <!-- JavaScript -->
+
+    <title>
+        Coffee House | کافه
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+
+<body>
+
+<header class="navbar">
+
+    <div class="container nav-content">
+
+        <a href="/" class="logo">
+
+            <span>☕</span>
+
+            Coffee House
+
+        </a>
+
+
+        <nav>
+
+            <a href="#menu">
+                منو
+            </a>
+
+            <a href="#about">
+                درباره ما
+            </a>
+
+            <a href="#contact">
+                تماس
+            </a>
+
+            <a href="/orders/">
+                پیگیری سفارش
+            </a>
+
+        </nav>
+
+
+        <a
+            href="/cart/"
+            class="nav-button"
+        >
+            🛒 سبد خرید
+        </a>
+
     </div>
 
+</header>
 
-    <div
-        class="cart-summary"
-        id="cart-summary"
+
+<main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="container hero-content">
+
+            <div class="hero-text">
+
+                <span class="eyebrow">
+                    FRESHLY BREWED EVERY DAY
+                </span>
+
+
+                <h1>
+
+                    قهوه‌ی مورد علاقه‌ات
+
+                    <span>
+                        منتظرته.
+                    </span>
+
+                </h1>
+
+
+                <p>
+
+                    قهوه‌های تازه، نوشیدنی‌های خوش‌طعم
+                    و خوراکی‌های دلچسب.
+                    سفارش مورد علاقه‌ات را فقط با چند کلیک ثبت کن.
+
+                </p>
+
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="#menu"
+                        class="btn btn-primary"
+                    >
+                        مشاهده منو
+                    </a>
+
+
+                    <a
+                        href="#about"
+                        class="btn btn-secondary"
+                    >
+                        درباره ما
+                    </a>
+
+                </div>
+
+
+                <div class="hero-stats">
+
+                    <div>
+
+                        <strong>
+                            4.9
+                        </strong>
+
+                        <span>
+                            امتیاز مشتریان
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            20+
+                        </strong>
+
+                        <span>
+                            آیتم منو
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            10 دقیقه
+                        </strong>
+
+                        <span>
+                            میانگین آماده‌سازی
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-image">
+
+                <div class="coffee-card">
+
+                    <div class="coffee-icon">
+                        ☕
+                    </div>
+
+
+                    <span>
+                        Today's Favorite
+                    </span>
+
+
+                    <h3>
+                        Cappuccino
+                    </h3>
+
+
+                    <p>
+                        اسپرسوی غنی با شیر بخار داده شده.
+                    </p>
+
+
+                    <div class="coffee-bottom">
+
+                        <strong>
+                            120,000 تومان
+                        </strong>
+
+                        <a
+                            href="#menu"
+                            class="btn btn-primary"
+                        >
+                            +
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MENU -->
+
+    <section
+        class="categories"
+        id="menu"
     >
-        🛒 سبد خرید:
 
-        <span id="cart-count">
-            0
-        </span>
+        <div class="container">
 
-        محصول
+            <div class="section-header">
 
-        |
+                <div>
 
-        <span id="cart-total">
-            0
-        </span>
+                    <span class="eyebrow">
+                        OUR MENU
+                    </span>
 
-        تومان
+
+                    <h2>
+                        چی میل داری؟
+                    </h2>
+
+                </div>
+
+
+                <p>
+
+                    از بین نوشیدنی‌ها و خوراکی‌های تازه
+                    منوی ما انتخاب کن.
+
+                </p>
+
+            </div>
+
+
+            <!-- Categories from API -->
+
+            <div
+                class="category-list"
+                id="category-list"
+            >
+
+                <button
+                    class="category active"
+                    type="button"
+                >
+                    در حال دریافت...
+                </button>
+
+            </div>
+
+
+            <!-- Cart Summary -->
+
+            <div
+                class="cart-summary"
+                id="cart-summary"
+            >
+
+                <a href="/cart/">
+
+                    🛒 سبد خرید
+
+                </a>
+
+
+                <span id="cart-count">
+                    0
+                </span>
+
+                محصول
+
+                |
+
+                <span id="cart-total">
+                    0
+                </span>
+
+                تومان
+
+            </div>
+
+
+            <!-- Products from API -->
+
+            <div
+                class="products"
+                id="products-container"
+            >
+
+                <p class="loading">
+                    در حال دریافت محصولات...
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+
+    <section
+        class="about"
+        id="about"
+    >
+
+        <div class="container about-content">
+
+            <div class="about-box">
+
+                <span>
+                    EST. 2024
+                </span>
+
+
+                <strong>
+                    ☕
+                </strong>
+
+
+                <h3>
+                    Coffee House
+                </h3>
+
+            </div>
+
+
+            <div class="about-text">
+
+                <span class="eyebrow">
+                    WHY COFFEE HOUSE?
+                </span>
+
+
+                <h2>
+
+                    قهوه ساده.
+
+                    <br>
+
+                    لحظه‌های خوب.
+
+                </h2>
+
+
+                <p>
+
+                    ما معتقدیم قهوه خوب نیازی به پیچیدگی ندارد.
+                    تمرکز ما روی مواد اولیه باکیفیت،
+                    قهوه تازه و تجربه سفارش ساده است.
+
+                </p>
+
+
+                <a
+                    href="#menu"
+                    class="text-link"
+                >
+                    مشاهده منو ←
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+
+    <section class="cta">
+
+        <div class="container cta-content">
+
+            <div>
+
+                <span class="eyebrow">
+                    READY TO ORDER?
+                </span>
+
+
+                <h2>
+                    قهوه بعدی تو فقط یک کلیک فاصله دارد.
+                </h2>
+
+            </div>
+
+
+            <a
+                href="#menu"
+                class="btn btn-light"
+            >
+                شروع سفارش ←
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer id="contact">
+
+    <div class="container footer-content">
+
+        <div>
+
+            <a
+                href="/"
+                class="logo"
+            >
+
+                <span>
+                    ☕
+                </span>
+
+                Coffee House
+
+            </a>
+
+
+            <p>
+                Fresh coffee. Good moments.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="#menu">
+                منو
+            </a>
+
+            <a href="#about">
+                درباره ما
+            </a>
+
+            <a href="/orders/">
+                پیگیری سفارش
+            </a>
+
+        </div>
+
+
+        <p class="copyright">
+
+            © 2026 Coffee House
+
+        </p>
+
     </div>
 
+</footer>
 
-    <div
-        class="products"
-        id="products-container"
-    >
-        <!-- Products from API -->
-    </div>
 
-</section>
+<script
+    src="{% static 'js/menu.js' %}"
+></script>
 
-<script src="{% static 'js/menu.js' %}"></script>
-<script src="{% static 'js/cart.js' %}"></script>
+
+<script
+    src="{% static 'js/cart.js' %}"
+></script>
+
+</body>
+
+</html>

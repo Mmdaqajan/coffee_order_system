@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView
+from django.db.models import Prefetch
 
 from .models import Category, Product
 from .serializers import (
@@ -13,10 +14,20 @@ class MenuListAPIView(ListAPIView):
 
     def get_queryset(self):
 
+        products = Product.objects.filter(
+            is_available=True
+        ).select_related(
+            "category"
+        )
+
         queryset = Category.objects.filter(
             is_active=True
         ).prefetch_related(
-            "products"
+            Prefetch(
+                "products",
+                queryset=products,
+                to_attr="available_products",
+            )
         )
 
         category_id = self.request.GET.get(
@@ -24,7 +35,6 @@ class MenuListAPIView(ListAPIView):
         )
 
         if category_id:
-
             queryset = queryset.filter(
                 id=category_id
             )
@@ -49,7 +59,6 @@ class ProductListAPIView(ListAPIView):
         )
 
         if category_id:
-
             queryset = queryset.filter(
                 category_id=category_id
             )

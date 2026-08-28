@@ -1,58 +1,121 @@
-<div class="success-card">
+{% load static %}
 
-    <div class="success-icon">
-        ✓
-    </div>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 
-    <h1>
-        سفارش شما ثبت شد 🎉
-    </h1>
+<head>
 
-    <p>
-        سفارش شما با موفقیت ثبت شد.
-    </p>
+    <meta charset="UTF-8">
 
-    <div class="order-code-box">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-        <span>
-            کد سفارش
-        </span>
+    <title>
+        سفارش ثبت شد | Coffee Shop
+    </title>
 
-        <strong id="order-code">
-            ---
-        </strong>
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
 
-    </div>
-
-    <a href="/">
-        بازگشت به منو
-    </a>
-
-    <a href="/orders/">
-        پیگیری سفارش
-    </a>
-
-</div>
+</head>
 
 
-<script>
+<body>
 
-const params =
-    new URLSearchParams(
-        window.location.search
-    );
+    <main class="success-page">
+
+        <div class="success-card">
+
+            <div class="success-icon">
+                ✓
+            </div>
 
 
-const code =
-    params.get("code");
+            <h1>
+                سفارش شما ثبت شد 🎉
+            </h1>
 
 
-if (code) {
+            <p>
+                سفارش شما با موفقیت ثبت شد.
+            </p>
 
-    document.getElementById(
-        "order-code"
-    ).textContent = code;
 
-}
+            <div class="order-code-box">
 
-</script>
+                <span>
+                    کد سفارش
+                </span>
+
+
+                <strong id="order-code">
+                    ---
+                </strong>
+
+            </div>
+
+
+            <p class="success-status">
+
+                وضعیت سفارش:
+
+                <strong>
+                    در انتظار بررسی
+                </strong>
+
+            </p>
+
+
+            <div class="success-actions">
+
+                <a
+                    href="/"
+                    class="back-to-menu"
+                >
+                    بازگشت به منو
+                </a>
+
+
+                <a
+                    href="/orders/"
+                    class="track-order"
+                >
+                    پیگیری سفارش
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const orderCode =
+            params.get("code");
+
+
+        if (orderCode) {
+
+            document.getElementById(
+                "order-code"
+            ).textContent = orderCode;
+
+        }
+
+    </script>
+
+</body>
+
+</html>

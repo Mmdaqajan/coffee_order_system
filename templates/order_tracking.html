@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        پیگیری سفارش | Coffee Shop
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="tracking-page">
+
+        <div class="tracking-container">
+
+            <a
+                href="/"
+                class="back-link"
+            >
+                ← بازگشت به منو
+            </a>
+
+
+            <div class="tracking-header">
+
+                <h1>
+                    پیگیری سفارش
+                </h1>
+
+                <p>
+                    کد سفارش خود را وارد کنید
+                </p>
+
+            </div>
+
+
+            <form
+                id="tracking-form"
+            >
+
+                <div class="tracking-input">
+
+                    <input
+                        type="text"
+                        id="order-code"
+                        placeholder="مثلاً 4827"
+                        autocomplete="off"
+                        required
+                    >
+
+
+                    <button
+                        type="submit"
+                    >
+                        پیگیری
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <div
+                id="tracking-result"
+                class="tracking-result"
+            ></div>
+
+        </div>
+
+    </main>
+
+
+    <script
+        src="{% static 'js/order-tracking.js' %}"
+    ></script>
+
+</body>
+
+</html>

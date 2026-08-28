@@ -1,0 +1,131 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ثبت سفارش | Coffee Shop</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+</head>
+
+<body>
+
+<main class="checkout-page">
+
+    <div class="checkout-container">
+
+        <div class="checkout-header">
+
+            <a href="/cart/" class="back-link">
+                ← بازگشت به سبد خرید
+            </a>
+
+            <h1>
+                ثبت سفارش
+            </h1>
+
+        </div>
+
+
+        <section class="checkout-section">
+
+            <h2>
+                اطلاعات سفارش
+            </h2>
+
+            <form id="checkout-form">
+
+                <div class="form-group">
+
+                    <label for="customer-name">
+                        نام شما
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customer-name"
+                        name="customer_name"
+                        placeholder="نام خود را وارد کنید"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="table-number">
+                        شماره میز
+                    </label>
+
+                    <input
+                        type="number"
+                        id="table-number"
+                        name="table_number"
+                        min="1"
+                        placeholder="مثلاً 5"
+                        required
+                    >
+
+                </div>
+
+
+                <h2>
+                    خلاصه سفارش
+                </h2>
+
+                <div id="checkout-items"></div>
+
+
+                <div class="checkout-total">
+
+                    <span>
+                        مبلغ نهایی
+                    </span>
+
+                    <strong id="checkout-total">
+                        0 تومان
+                    </strong>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="checkout-button"
+                    id="submit-order"
+                >
+                    ثبت سفارش
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <div
+            id="checkout-message"
+            class="checkout-message"
+        ></div>
+
+    </div>
+
+</main>
+
+
+<script src="{% static 'js/checkout.js' %}"></script>
+
+</body>
+
+</html>

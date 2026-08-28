@@ -27,4 +27,4 @@ COPY . /app/
 EXPOSE 8000
 
 # دستور اجرای سرور
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000", "--noreload"]

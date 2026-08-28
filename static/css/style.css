@@ -795,3 +795,64 @@ footer p {
 .empty-products span {
     font-size: 45px;
 }
+
+.success-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+.success-card {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    padding: 40px 30px;
+    border-radius: 20px;
+}
+
+.success-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+}
+
+.order-code-box {
+    margin: 30px 0;
+    padding: 20px;
+    border-radius: 14px;
+}
+
+.order-code-box span {
+    display: block;
+    margin-bottom: 8px;
+    opacity: 0.7;
+}
+
+.order-code-box strong {
+    font-size: 32px;
+    letter-spacing: 4px;
+}
+
+.success-status {
+    margin-bottom: 30px;
+}
+
+.success-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.success-actions a {
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+}

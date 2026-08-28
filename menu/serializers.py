@@ -1,18 +1,30 @@
 from rest_framework import serializers
+
 from .models import Category, Product
 
+
 class ProductSerializer(serializers.ModelSerializer):
-    """سریالایزر برای نمایش جزییات هر محصول"""
+
     class Meta:
         model = Product
-        fields = ['id', 'title', 'description', 'price', 'is_available']
+
+        fields = [
+            "id",
+            "title",
+            "description",
+            "price",
+            "is_available",
+            "image",
+        ]
 
 
 class CategorySerializer(serializers.ModelSerializer):
+
     products = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
+
         fields = [
             "id",
             "title",
@@ -20,8 +32,13 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
     def get_products(self, obj):
-        products = obj.products.filter(is_available=True)
+
+        available_products = obj.products.filter(
+            is_available=True
+        )
+
         return ProductSerializer(
-            products,
-            many=True
+            available_products,
+            many=True,
+            context=self.context,
         ).data

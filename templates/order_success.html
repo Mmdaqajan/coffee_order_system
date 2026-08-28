@@ -1,0 +1,58 @@
+<div class="success-card">
+
+    <div class="success-icon">
+        ✓
+    </div>
+
+    <h1>
+        سفارش شما ثبت شد 🎉
+    </h1>
+
+    <p>
+        سفارش شما با موفقیت ثبت شد.
+    </p>
+
+    <div class="order-code-box">
+
+        <span>
+            کد سفارش
+        </span>
+
+        <strong id="order-code">
+            ---
+        </strong>
+
+    </div>
+
+    <a href="/">
+        بازگشت به منو
+    </a>
+
+    <a href="/orders/">
+        پیگیری سفارش
+    </a>
+
+</div>
+
+
+<script>
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const code =
+    params.get("code");
+
+
+if (code) {
+
+    document.getElementById(
+        "order-code"
+    ).textContent = code;
+
+}
+
+</script>

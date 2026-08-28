@@ -1,80 +1,21 @@
-from rest_framework.generics import ListAPIView
-from .models import Category, Product
-from django.shortcuts import render
-from .serializers import CategorySerializer, ProductSerializer
-
-class MenuListAPIView(ListAPIView):
-    serializer_class = CategorySerializer
-
-    def get_queryset(self):
-        queryset = Category.objects.prefetch_related("products")
-
-        category_id = self.request.GET.get("category")
-
-        if category_id:
-            queryset = queryset.filter(id=category_id)
-
-        return queryset
+from django.views.generic import TemplateView
 
 
-class ProductListAPIView(ListAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+class HomeView(TemplateView):
+    template_name = "index.html"
 
 
+class CartView(TemplateView):
+    template_name = "cart.html"
 
 
-from .models import Category, Product
+class CheckoutView(TemplateView):
+    template_name = "checkout.html"
 
 
-def home(request):
-    products = Product.objects.filter(
-        is_available=True
-    ).select_related("category")
-
-    categories = Category.objects.all()
-
-    category_id = request.GET.get("category")
-
-    if category_id:
-        products = products.filter(category_id=category_id)
-
-    return render(
-        request,
-        "index.html",
-        {
-            "products": products,
-            "categories": categories,
-        }
-    )
-
-def products_partial(request):
-    products = Product.objects.filter(
-        is_available=True
-    ).select_related("category")
-
-    category_id = request.GET.get("category")
-
-    if category_id:
-        products = products.filter(
-            category_id=category_id
-        )
-
-    return render(
-        request,
-        "partials/product_list.html",
-        {
-            "products": products
-        }
-    )
+class OrderSuccessView(TemplateView):
+    template_name = "order_success.html"
 
 
-
-def cart(request):
-    return render(request, "cart.html")
-
-    from django.shortcuts import render
-
-
-def checkout(request):
-    return render(request, "checkout.html")
+class OrderTrackingView(TemplateView):
+    template_name = "order_tracking.html"

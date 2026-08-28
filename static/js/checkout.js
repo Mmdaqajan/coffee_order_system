@@ -1,41 +1,45 @@
+const form =
+    document.getElementById(
+        "checkout-form"
+    );
+
+
+const itemsContainer =
+    document.getElementById(
+        "checkout-items"
+    );
+
+
+const totalElement =
+    document.getElementById(
+        "checkout-total"
+    );
+
+
+const messageElement =
+    document.getElementById(
+        "checkout-message"
+    );
+
+
 let cart = JSON.parse(
     localStorage.getItem("cart") || "{}"
 );
 
 
-const form =
-    document.getElementById("checkout-form");
-
-const itemsContainer =
-    document.getElementById("checkout-items");
-
-const totalElement =
-    document.getElementById("checkout-total");
-
-const messageElement =
-    document.getElementById("checkout-message");
-
-const submitButton =
-    document.getElementById("submit-order");
-
-
 function renderCheckout() {
-
-    itemsContainer.innerHTML = "";
 
     const items =
         Object.values(cart);
 
 
-    if (items.length === 0) {
+    if (!items.length) {
 
         itemsContainer.innerHTML = `
             <p>
-                سبد خرید شما خالی است.
+                سبد خرید خالی است.
             </p>
         `;
-
-        submitButton.disabled = true;
 
         return;
     }
@@ -44,40 +48,36 @@ function renderCheckout() {
     let total = 0;
 
 
+    itemsContainer.innerHTML = "";
+
+
     items.forEach(item => {
 
         const itemTotal =
-            item.price * item.quantity;
+            item.price *
+            item.quantity;
+
 
         total += itemTotal;
 
 
-        const element =
-            document.createElement("div");
+        itemsContainer.innerHTML += `
 
-        element.className =
-            "checkout-item";
-
-
-        element.innerHTML = `
-            <div>
-                <strong>
-                    ${item.title}
-                </strong>
+            <div class="checkout-item">
 
                 <span>
-                    ${item.quantity} عدد
+                    ${item.title}
                 </span>
+
+                <span>
+                    ${item.quantity}
+                    ×
+                    ${item.price.toLocaleString("fa-IR")}
+                </span>
+
             </div>
 
-            <strong>
-                ${itemTotal.toLocaleString("fa-IR")}
-                تومان
-            </strong>
         `;
-
-
-        itemsContainer.appendChild(element);
 
     });
 
@@ -94,42 +94,24 @@ form.addEventListener(
         event.preventDefault();
 
 
-        const items =
-            Object.values(cart);
-
-
-        if (items.length === 0) {
-
-            return;
-        }
-
-
         const customerName =
             document.getElementById(
                 "customer-name"
             ).value.trim();
 
 
-        const tableNumber =
-            document.getElementById(
-                "table-number"
-            ).value;
+        const items =
+            Object.values(cart).map(
+                item => ({
 
+                    product_id:
+                        Number(item.id),
 
-        const orderItems =
-            items.map(item => ({
+                    quantity:
+                        item.quantity
 
-                product_id: Number(item.id),
-
-                quantity: item.quantity
-
-            }));
-
-
-        submitButton.disabled = true;
-
-        submitButton.textContent =
-            "در حال ثبت سفارش...";
+                })
+            );
 
 
         try {
@@ -150,11 +132,8 @@ form.addEventListener(
                             customer_name:
                                 customerName,
 
-                            table_number:
-                                Number(tableNumber),
-
                             items:
-                                orderItems
+                                items
 
                         })
                     }
@@ -169,28 +148,24 @@ form.addEventListener(
 
                 throw new Error(
                     data.detail ||
-                    data.message ||
                     "ثبت سفارش ناموفق بود."
                 );
             }
 
 
-            localStorage.removeItem("cart");
+            localStorage.removeItem(
+                "cart"
+            );
 
 
             window.location.href =
                 `/order-success/?code=${data.order_code}`;
-
 
         } catch (error) {
 
             messageElement.textContent =
                 error.message;
 
-            submitButton.disabled = false;
-
-            submitButton.textContent =
-                "ثبت سفارش";
         }
 
     }

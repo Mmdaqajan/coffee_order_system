@@ -1,249 +1,40 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<section class="menu-section">
 
-    <title>Coffee House | Fresh Coffee & More</title>
-
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-</head>
-
-<body>
-
-<header class="navbar">
-    <div class="container nav-content">
-        <a href="#" class="logo">
-            <span>☕</span>
-            Coffee House
-        </a>
-
-        <nav>
-            <a href="#menu">Menu</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
-
-        <a href="#menu" class="nav-button">
-            Order Now
-        </a>
-    </div>
-</header>
-
-
-<main>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="container hero-content">
-
-            <div class="hero-text">
-                <span class="eyebrow">FRESHLY BREWED EVERY DAY</span>
-
-                <h1>
-                    Your perfect
-                    <span>coffee</span>
-                    is waiting.
-                </h1>
-
-                <p>
-                    Carefully selected beans, freshly prepared drinks
-                    and delicious treats. Order your favorite coffee
-                    in just a few clicks.
-                </p>
-
-                <div class="hero-buttons">
-                    <a href="#menu" class="btn btn-primary">
-                        Explore Menu
-                    </a>
-
-                    <a href="#about" class="btn btn-secondary">
-                        Our Story
-                    </a>
-                </div>
-
-                <div class="hero-stats">
-                    <div>
-                        <strong>4.9</strong>
-                        <span>Customer Rating</span>
-                    </div>
-
-                    <div>
-                        <strong>20+</strong>
-                        <span>Menu Items</span>
-                    </div>
-
-                    <div>
-                        <strong>10 min</strong>
-                        <span>Average Order</span>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="hero-image">
-                <div class="coffee-card">
-                    <div class="coffee-icon">☕</div>
-
-                    <span>Today's Favorite</span>
-
-                    <h3>Cappuccino</h3>
-
-                    <p>
-                        Rich espresso with creamy steamed milk.
-                    </p>
-
-                    <div class="coffee-bottom">
-                        <strong>120,000 T</strong>
-                        <button>+</button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-
-    <!-- CATEGORIES -->
-    <section class="categories" id="menu">
-        <div class="container">
-
-            <div class="section-header">
-                <div>
-                    <span class="eyebrow">OUR MENU</span>
-                    <h2>What are you craving?</h2>
-                </div>
-
-                <p>
-                    Choose from our selection of freshly prepared
-                    drinks and delicious treats.
-                </p>
-            </div>
-
-
-<div class="category-list">
-
-    <a href="/" class="category active">
-        همه
-    </a>
-
-    {% for category in categories %}
-
-        <a
-            href="?category={{ category.id }}"
-            class="category"
-        >
-            {{ category.title }}
-        </a>
-
-    {% endfor %}
-
+    <div
+        class="category-list"
+        id="category-list"
+    >
+        <!-- JavaScript -->
     </div>
 
-    <div class="cart-summary" id="cart-summary">
-<a href="/cart/">
-    🛒 سبد خرید
-</a>
-    <span id="cart-count">0</span>
-    محصول
-    |
-    <span id="cart-total">0</span>
-    تومان
-</div>
 
-<div class="cart-items" id="cart-items"></div>
+    <div
+        class="cart-summary"
+        id="cart-summary"
+    >
+        🛒 سبد خرید:
 
-            <!-- PRODUCTS -->
-            <div class="products" id="products-container">
-                {% include "partials/product_list.html" %}
-            </div>
-    </section>
+        <span id="cart-count">
+            0
+        </span>
 
+        محصول
 
-    <!-- ABOUT -->
-    <section class="about" id="about">
-        <div class="container about-content">
+        |
 
-            <div class="about-box">
-                <span>EST. 2024</span>
-                <strong>☕</strong>
-                <h3>Coffee House</h3>
-            </div>
+        <span id="cart-total">
+            0
+        </span>
 
-            <div class="about-text">
-                <span class="eyebrow">WHY COFFEE HOUSE?</span>
-
-                <h2>
-                    Simple coffee.
-                    <br>
-                    Great moments.
-                </h2>
-
-                <p>
-                    We believe great coffee doesn't need to be complicated.
-                    We focus on quality ingredients, freshly roasted beans
-                    and a simple ordering experience.
-                </p>
-
-                <a href="#menu" class="text-link">
-                    Explore our menu →
-                </a>
-            </div>
-
-        </div>
-    </section>
-
-
-    <!-- CTA -->
-    <section class="cta">
-        <div class="container cta-content">
-            <div>
-                <span class="eyebrow">READY TO ORDER?</span>
-                <h2>Your next coffee is one click away.</h2>
-            </div>
-
-            <a href="#menu" class="btn btn-light">
-                Start Ordering →
-            </a>
-        </div>
-    </section>
-
-</main>
-
-
-<footer id="contact">
-    <div class="container footer-content">
-
-        <div>
-            <a href="#" class="logo">
-                <span>☕</span>
-                Coffee House
-            </a>
-
-            <p>
-                Fresh coffee. Good moments.
-            </p>
-        </div>
-
-        <div class="footer-links">
-            <a href="#menu">Menu</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </div>
-
-        <p class="copyright">
-            © 2026 Coffee House
-        </p>
-
+        تومان
     </div>
-</footer>
 
 
-<script src="{% static 'js/app.js' %}"></script>
+    <div
+        class="products"
+        id="products-container"
+    >
+        <!-- Products from API -->
+    </div>
 
-</body>
-</html>
+</section>

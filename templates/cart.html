@@ -1,7 +1,8 @@
+```html
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
 
@@ -12,9 +13,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        سبد خرید | Coffee House
-    </title>
+    <title>Cart | Coffee House</title>
 
     <link
         rel="stylesheet"
@@ -30,100 +29,146 @@
 
     <div class="cart-container">
 
-        <div class="cart-header">
+        <!-- =============================================
+             Cart Header
+        ============================================== -->
+
+        <header class="cart-header">
 
             <a
                 href="/"
                 class="back-link"
             >
-                ← بازگشت به منو
+                ← Back to Menu
             </a>
 
-
             <h1>
-                سبد خرید
+                Your Cart
             </h1>
 
+        </header>
+
+
+        <!-- =============================================
+             Loading
+        ============================================== -->
+
+        <div
+            id="cart-loading"
+            class="cart-loading"
+        >
+            Loading cart...
         </div>
 
+
+        <!-- =============================================
+             Products
+             cart.js محصولات را از API اینجا قرار می‌دهد
+        ============================================== -->
 
         <div
             id="cart-page-items"
-        >
-
-            <!-- Cart items will be rendered by JavaScript -->
-
-        </div>
+            class="cart-items"
+        ></div>
 
 
-        <div
+        <!-- =============================================
+             Empty Cart
+        ============================================== -->
+
+        <section
             id="cart-empty"
             class="cart-empty"
+            style="display: none;"
         >
 
             <div class="empty-icon">
                 🛒
             </div>
 
-
             <h2>
-                سبد خرید خالی است
+                Your cart is empty
             </h2>
 
-
             <p>
-                هنوز محصولی به سبد خرید اضافه نکرده‌اید.
+                You haven't added any products yet.
             </p>
-
 
             <a
                 href="/"
                 class="back-to-menu"
             >
-                مشاهده منو
+                Browse Menu
             </a>
 
-        </div>
+        </section>
 
 
-        <div
+        <!-- =============================================
+             Cart Summary
+        ============================================== -->
+
+        <section
             id="cart-checkout"
             class="cart-checkout"
+            style="display: none;"
         >
 
-            <div class="cart-total-row">
+            <div class="cart-summary">
 
-                <span>
-                    مبلغ کل
-                </span>
+                <div class="cart-summary-row">
+
+                    <span>
+                        Items
+                    </span>
+
+                    <strong id="page-cart-count">
+                        0
+                    </strong>
+
+                </div>
 
 
-                <strong id="page-cart-total">
-                    0 تومان
-                </strong>
+                <div class="cart-summary-row total-row">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="page-cart-total">
+                        0 Toman
+                    </strong>
+
+                </div>
 
             </div>
 
 
+            <!-- =============================================
+                 Checkout / Payment
+            ============================================== -->
+
             <a
                 href="/checkout/"
                 class="checkout-button"
-                id="checkout-button"
             >
-                ادامه و ثبت سفارش
+                Proceed to Checkout →
             </a>
 
-        </div>
+        </section>
 
     </div>
 
 </main>
 
 
-<script
-    src="{% static 'js/cart.js' %}"
-></script>
+<!-- =============================================
+     Cart JavaScript
+============================================== -->
+
+<script src="{% static 'js/cart.js' %}"></script>
 
 </body>
 
 </html>
+```

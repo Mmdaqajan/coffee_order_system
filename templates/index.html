@@ -6,37 +6,24 @@
 
 <head>
 
-```
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Coffee House</title>
 
-<link
-    rel="stylesheet"
-    href="{% static 'css/style.css' %}"
->
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
->
+<!-- Google Fonts -->
 
-<link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
     rel="stylesheet"
 >
-```
 
 </head>
 
@@ -46,16 +33,11 @@
 
 <header class="navbar">
 
-```
 <div class="container nav-content">
 
-    <a
-        href="/"
-        class="logo"
-    >
+    <a href="/" class="logo">
         ☕ Coffee House
     </a>
-
 
     <nav>
 
@@ -77,16 +59,12 @@
 
     </nav>
 
-
-    <a
-        href="/cart/"
-        class="nav-button"
-    >
+    <a href="/cart/" class="nav-button">
         🛒 Cart
     </a>
 
 </div>
-```
+
 
 </header>
 
@@ -96,9 +74,7 @@
 
 <section class="hero-banner">
 
-```
 <div class="hero-overlay"></div>
-
 
 <div class="container hero-banner-content">
 
@@ -106,61 +82,39 @@
         FRESHLY BREWED EVERY DAY
     </span>
 
-
     <h1>
-
         GOOD COFFEE.
-
         <br>
-
         GOOD MOMENTS.
-
     </h1>
 
-
     <p>
-
         Fresh coffee, handcrafted drinks
         and delicious bites.
         Made for your everyday moments.
-
     </p>
-
 
     <div class="hero-buttons">
 
-        <a
-            href="#menu"
-            class="btn btn-primary"
-        >
+        <a href="#menu" class="btn btn-primary">
             Explore Menu
         </a>
 
-
-        <a
-            href="/orders/"
-            class="btn btn-secondary"
-        >
+        <a href="/orders/" class="btn btn-secondary">
             Track Order
         </a>
 
     </div>
 
 </div>
-```
 
 </section>
 
 <!-- ==================== MENU ==================== -->
 
-<section
-    class="menu-section"
-    id="menu"
->
+<section class="menu-section" id="menu">
 
-```
 <div class="container">
-
 
     <div class="section-header">
 
@@ -170,25 +124,20 @@
                 OUR MENU
             </span>
 
-
             <h2>
                 Choose Your Favorite
             </h2>
 
         </div>
 
-
-        <a
-            href="/cart/"
-            class="cart-link"
-        >
+        <a href="/cart/" class="cart-link">
             🛒 View Cart
         </a>
 
     </div>
 
 
-    <!-- Categories -->
+    <!-- ==================== CATEGORIES ==================== -->
 
     <div
         id="category-list"
@@ -205,18 +154,28 @@
     </div>
 
 
-    <!-- Cart Summary -->
+    <!-- ==================== CART SUMMARY ==================== -->
 
     <a href="/cart/" class="cart-summary">
-    🛒 Cart:
-    <strong id="cart-count">0</strong>
-    items |
-    <strong id="cart-total">0</strong>
-    Toman
-</a>
+
+        🛒 Cart:
+
+        <strong id="cart-count">
+            0
+        </strong>
+
+        items |
+
+        <strong id="cart-total">
+            0
+        </strong>
+
+        Toman
+
+    </a>
 
 
-    <!-- Products -->
+    <!-- ==================== PRODUCTS ==================== -->
 
     <div
         id="products-container"
@@ -224,25 +183,22 @@
     >
 
         <div class="loading">
-
             Loading products...
-
         </div>
 
     </div>
 
-
 </div>
-```
 
 </section>
 
 <!-- ==================== ABOUT ==================== -->
 
+<section id="about">
 
+<!-- About section can be added later -->
 
-<!-- ==================== CTA ==================== -->
-
+</section>
 
 </main>
 
@@ -250,19 +206,13 @@
 
 <footer id="contact">
 
-```
 <div class="container footer-content">
-
 
     <div>
 
-        <a
-            href="/"
-            class="logo"
-        >
+        <a href="/" class="logo">
             ☕ Coffee House
         </a>
-
 
         <p>
             Fresh coffee. Good moments.
@@ -289,18 +239,17 @@
 
 
     <p class="copyright">
-
         © 2026 Coffee House
-
     </p>
 
-
 </div>
-```
 
 </footer>
 
+<!-- ==================== JAVASCRIPT ==================== -->
+
 <script src="{% static 'js/cart.js' %}"></script>
+
 <script src="{% static 'js/menu.js' %}"></script>
 
 </body>

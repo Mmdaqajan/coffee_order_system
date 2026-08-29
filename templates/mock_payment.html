@@ -1,0 +1,115 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Payment | Coffee House</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+<main class="payment-page">
+
+    <div class="payment-container">
+
+        <!-- عنوان صفحه پرداخت -->
+
+        <h1>
+            Coffee House Payment
+        </h1>
+
+
+        <!-- اطلاعات سفارش -->
+
+        <div class="payment-order-info">
+
+            <p>
+                Order Code:
+                <strong>
+                    {{ order.order_code }}
+                </strong>
+            </p>
+
+            <p>
+                Amount:
+                <strong>
+                    {{ order.total_price }}
+                    Toman
+                </strong>
+            </p>
+
+        </div>
+
+
+        <!-- پیام تست -->
+
+        <div class="mock-payment-warning">
+
+            <p>
+                This is a test payment page.
+            </p>
+
+            <small>
+                No real money will be charged.
+            </small>
+
+        </div>
+
+
+        <!-- نتیجه پرداخت -->
+
+        <div class="payment-actions">
+
+            <button
+                type="button"
+                id="success-payment-button"
+                class="payment-success-button"
+            >
+                Pay Successfully
+            </button>
+
+
+            <button
+                type="button"
+                id="failed-payment-button"
+                class="payment-failed-button"
+            >
+                Cancel Payment
+            </button>
+
+        </div>
+
+
+        <!-- پیام خطا -->
+
+        <p
+            id="payment-message"
+            class="payment-message"
+        ></p>
+
+    </div>
+
+</main>
+
+
+<script src="{% static 'js/mock-payment.js' %}"></script>
+
+</body>
+
+</html>

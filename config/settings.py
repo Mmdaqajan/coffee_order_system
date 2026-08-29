@@ -187,6 +187,6 @@ SIMPLE_JWT = {
 }
 
 # تنظیمات مربوط به زرین‌پال
-ZARINPAL_MERCHANT_ID = config(
-    "ZARINPAL_MERCHANT_ID"
-)
+# ZARINPAL_MERCHANT_ID = config(
+#     "ZARINPAL_MERCHANT_ID"
+# )

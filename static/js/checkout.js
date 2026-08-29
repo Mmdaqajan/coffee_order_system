@@ -1,31 +1,129 @@
 // =========================================================
-// تنظیمات API
+// عناصر صفحه Checkout
 // =========================================================
 
-const ORDER_CREATE_API_URL = "/api/orders/create/";
-const PAYMENT_CREATE_API_URL = "/api/orders/payment/create/";
+const form =
+    document.getElementById(
+        "checkout-form"
+    );
 
 
-// =========================================================
-// اجرای صفحه بعد از لود کامل
-// =========================================================
+const itemsContainer =
+    document.getElementById(
+        "checkout-items"
+    );
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadCheckout();
-});
+
+const totalElement =
+    document.getElementById(
+        "checkout-total"
+    );
+
+
+const messageElement =
+    document.getElementById(
+        "checkout-message"
+    );
 
 
 // =========================================================
 // دریافت سبد خرید از Backend
 // =========================================================
 
-async function loadCheckout() {
+async function getCheckoutCart() {
+
+    const response =
+        await fetch(
+            "/api/orders/cart/"
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Failed to load cart."
+        );
+
+    }
+
+
+    return await response.json();
+}
+
+
+// =========================================================
+// نمایش سبد خرید در Checkout
+// =========================================================
+
+async function renderCheckout() {
 
     try {
 
-        const cart = await getCart();
+        const cart =
+            await getCheckoutCart();
 
-        renderCheckout(cart);
+
+        // اگر سبد خالی باشد
+        if (
+            !cart.items ||
+            cart.items.length === 0
+        ) {
+
+            itemsContainer.innerHTML = `
+                <p>
+                    Your cart is empty.
+                </p>
+            `;
+
+            totalElement.textContent =
+                "0 Toman";
+
+            return;
+        }
+
+
+        // پاک کردن محتوای قبلی
+        itemsContainer.innerHTML = "";
+
+
+        // نمایش محصولات
+        cart.items.forEach(item => {
+
+            const itemElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            itemElement.className =
+                "checkout-item";
+
+
+            itemElement.innerHTML = `
+                <span>
+                    ${item.title}
+                    ×
+                    ${item.quantity}
+                </span>
+
+                <strong>
+                    ${formatPrice(item.item_total)}
+                    Toman
+                </strong>
+            `;
+
+
+            itemsContainer.appendChild(
+                itemElement
+            );
+
+        });
+
+
+        // نمایش مبلغ کل
+        totalElement.textContent =
+            `${formatPrice(cart.total)} Toman`;
+
 
     } catch (error) {
 
@@ -34,124 +132,12 @@ async function loadCheckout() {
             error
         );
 
-        showCheckoutError(
-            "Failed to load your cart."
-        );
-    }
-}
 
+        messageElement.textContent =
+            error.message;
 
-// =========================================================
-// نمایش اطلاعات سبد در صفحه Checkout
-// =========================================================
-
-function renderCheckout(cart) {
-
-    const loadingElement =
-        document.getElementById("checkout-loading");
-
-    const contentElement =
-        document.getElementById("checkout-content");
-
-    const itemsContainer =
-        document.getElementById("checkout-items");
-
-    const totalElement =
-        document.getElementById("checkout-total");
-
-
-    // مخفی کردن Loading
-    loadingElement.style.display = "none";
-
-
-    // بررسی خالی بودن سبد
-    if (!cart.items || cart.items.length === 0) {
-
-        showCheckoutError(
-            "Your cart is empty."
-        );
-
-        return;
     }
 
-
-    // نمایش صفحه Checkout
-    contentElement.style.display = "block";
-
-
-    // پاک کردن محصولات قبلی
-    itemsContainer.innerHTML = "";
-
-
-    // ساخت آیتم‌های سفارش
-    cart.items.forEach(item => {
-
-        const itemElement =
-            createCheckoutItem(item);
-
-        itemsContainer.appendChild(
-            itemElement
-        );
-
-    });
-
-
-    // نمایش مبلغ کل
-    totalElement.textContent =
-        `${formatPrice(cart.total)} Toman`;
-}
-
-
-// =========================================================
-// ساخت یک آیتم سفارش
-// =========================================================
-
-function createCheckoutItem(item) {
-
-    const element =
-        document.createElement("div");
-
-    element.className =
-        "checkout-item";
-
-
-    const image =
-        item.image ||
-        "/static/images/coffee.jpg";
-
-
-    element.innerHTML = `
-        <div class="checkout-item-image">
-            <img
-                src="${image}"
-                alt="${item.title}"
-                loading="lazy"
-            >
-        </div>
-
-        <div class="checkout-item-info">
-
-            <h3>
-                ${item.title}
-            </h3>
-
-            <p>
-                ${item.quantity}
-                ×
-                ${formatPrice(item.price)}
-                Toman
-            </p>
-
-        </div>
-
-        <strong>
-            ${formatPrice(item.item_total)}
-            Toman
-        </strong>
-    `;
-
-
-    return element;
 }
 
 
@@ -159,347 +145,175 @@ function createCheckoutItem(item) {
 // ثبت سفارش
 // =========================================================
 
-async function createOrder(customerName) {
+form.addEventListener(
+    "submit",
+    async event => {
 
-    // ابتدا سبد واقعی Backend را دوباره می‌گیریم
-    const cart = await getCart();
-
-
-    if (!cart.items || cart.items.length === 0) {
-
-        throw new Error(
-            "Your cart is empty."
-        );
-    }
+        event.preventDefault();
 
 
-    // فقط ID و تعداد محصولات ارسال می‌شود.
-    // قیمت از Frontend ارسال نمی‌شود.
-    const items = cart.items.map(item => ({
-        product_id: Number(item.product_id),
-        quantity: Number(item.quantity)
-    }));
+        try {
+
+            // دریافت سبد واقعی از Backend
+            const cart =
+                await getCheckoutCart();
 
 
-    const response =
-        await fetch(
-            ORDER_CREATE_API_URL,
-            {
-                method: "POST",
+            if (
+                !cart.items ||
+                cart.items.length === 0
+            ) {
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+                throw new Error(
+                    "Your cart is empty."
+                );
 
-                body: JSON.stringify({
-                    customer_name:
-                        customerName,
-
-                    items:
-                        items
-                })
             }
-        );
 
 
-    const data =
-        await response.json();
+            const customerName =
+                document
+                    .getElementById(
+                        "customer-name"
+                    )
+                    .value
+                    .trim();
 
 
-    if (!response.ok) {
+            if (!customerName) {
 
-        throw new Error(
-            getApiErrorMessage(data)
-        );
-    }
+                throw new Error(
+                    "Please enter your name or table number."
+                );
 
-
-    return data;
-}
-
-
-// =========================================================
-// ایجاد پرداخت زرین‌پال
-// =========================================================
-
-async function createPayment(orderCode) {
-
-    const response =
-        await fetch(
-            PAYMENT_CREATE_API_URL,
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-                    order_code:
-                        orderCode
-                })
             }
-        );
 
 
-    const data =
-        await response.json();
+            // تبدیل آیتم‌های Cart API
+            // به فرمت مورد نیاز Order API
+            const items =
+                cart.items.map(item => ({
+
+                    product_id:
+                        Number(
+                            item.product_id
+                        ),
+
+                    quantity:
+                        Number(
+                            item.quantity
+                        )
+
+                }));
 
 
-    if (!response.ok) {
+            // =================================================
+            // مرحله اول:
+            // ساخت سفارش در Backend
+            // =================================================
 
-        throw new Error(
-            getApiErrorMessage(data)
-        );
-    }
+            const orderResponse =
+                await fetch(
+                    "/api/orders/create/",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            customer_name:
+                                customerName,
+
+                            items:
+                                items
+
+                        })
+                    }
+                );
 
 
-    return data;
-}
+            const orderData =
+                await orderResponse.json();
 
 
-// =========================================================
-// ارسال فرم Checkout
-// =========================================================
+            if (!orderResponse.ok) {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+                throw new Error(
+                    orderData.detail ||
+                    "Failed to create order."
+                );
 
-        const form =
-            document.getElementById(
-                "checkout-form"
+            }
+
+
+            // =================================================
+            // مرحله دوم:
+            // شروع پرداخت
+            // =================================================
+
+            const paymentResponse =
+                await fetch(
+                    "/api/orders/payment/start/",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            order_code:
+                                orderData.order_code
+
+                        })
+                    }
+                );
+
+
+            const paymentData =
+                await paymentResponse.json();
+
+
+            if (!paymentResponse.ok) {
+
+                throw new Error(
+                    paymentData.detail ||
+                    "Failed to start payment."
+                );
+
+            }
+
+
+            // =================================================
+            // مرحله سوم:
+            // انتقال به درگاه آزمایشی
+            // =================================================
+
+            window.location.href =
+                paymentData.payment_url;
+
+
+        } catch (error) {
+
+            console.error(
+                "Checkout error:",
+                error
             );
 
 
-        if (!form) {
-            return;
+            messageElement.textContent =
+                error.message;
+
         }
-
-
-        form.addEventListener(
-            "submit",
-            handleCheckoutSubmit
-        );
 
     }
 );
-
-
-// =========================================================
-// مدیریت کلیک روی دکمه پرداخت
-// =========================================================
-
-async function handleCheckoutSubmit(event) {
-
-    event.preventDefault();
-
-
-    const form =
-        event.currentTarget;
-
-
-    const customerName =
-        document.getElementById(
-            "customer-name"
-        ).value.trim();
-
-
-    const paymentButton =
-        document.getElementById(
-            "payment-button"
-        );
-
-
-    // بررسی نام یا شماره میز
-    if (!customerName) {
-
-        showCheckoutError(
-            "Please enter your name or table number."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        // -------------------------------------------------
-        // غیرفعال کردن دکمه
-        // -------------------------------------------------
-
-        paymentButton.disabled = true;
-
-        paymentButton.textContent =
-            "Creating order...";
-
-
-        // -------------------------------------------------
-        // مرحله اول:
-        // ساخت سفارش
-        // -------------------------------------------------
-
-        const order =
-            await createOrder(
-                customerName
-            );
-
-
-        // -------------------------------------------------
-        // مرحله دوم:
-        // ایجاد پرداخت
-        // -------------------------------------------------
-
-        paymentButton.textContent =
-            "Connecting to ZarinPal...";
-
-
-        const payment =
-            await createPayment(
-                order.order_code
-            );
-
-
-        // -------------------------------------------------
-        // بررسی لینک پرداخت
-        // -------------------------------------------------
-
-        if (!payment.payment_url) {
-
-            throw new Error(
-                "Payment gateway URL was not received."
-            );
-        }
-
-
-        // -------------------------------------------------
-        // انتقال کاربر به زرین‌پال
-        // -------------------------------------------------
-
-        window.location.href =
-            payment.payment_url;
-
-
-    } catch (error) {
-
-        console.error(
-            "Payment error:",
-            error
-        );
-
-
-        showCheckoutError(
-            error.message
-        );
-
-
-        // فعال کردن مجدد دکمه
-        paymentButton.disabled = false;
-
-        paymentButton.textContent =
-            "Proceed to Payment";
-    }
-}
-
-
-// =========================================================
-// نمایش خطای Checkout
-// =========================================================
-
-function showCheckoutError(message) {
-
-    const loadingElement =
-        document.getElementById(
-            "checkout-loading"
-        );
-
-    const contentElement =
-        document.getElementById(
-            "checkout-content"
-        );
-
-    const errorElement =
-        document.getElementById(
-            "checkout-error"
-        );
-
-    const messageElement =
-        document.getElementById(
-            "checkout-error-message"
-        );
-
-
-    if (loadingElement) {
-
-        loadingElement.style.display =
-            "none";
-    }
-
-
-    if (contentElement) {
-
-        contentElement.style.display =
-            "none";
-    }
-
-
-    if (messageElement) {
-
-        messageElement.textContent =
-            message;
-    }
-
-
-    if (errorElement) {
-
-        errorElement.style.display =
-            "block";
-    }
-}
-
-
-// =========================================================
-// استخراج پیام خطا از API
-// =========================================================
-
-function getApiErrorMessage(data) {
-
-    if (!data) {
-
-        return "An unexpected error occurred.";
-    }
-
-
-    if (data.detail) {
-
-        return data.detail;
-    }
-
-
-    // خطاهای Validation Serializer
-    const firstKey =
-        Object.keys(data)[0];
-
-
-    if (firstKey) {
-
-        const value =
-            data[firstKey];
-
-
-        if (Array.isArray(value)) {
-
-            return value[0];
-        }
-
-        return String(value);
-    }
-
-
-    return "An unexpected error occurred.";
-}
 
 
 // =========================================================
@@ -510,4 +324,19 @@ function formatPrice(price) {
 
     return Number(price)
         .toLocaleString("en-US");
+
 }
+
+
+// =========================================================
+// اجرای Checkout
+// =========================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        renderCheckout();
+
+    }
+);

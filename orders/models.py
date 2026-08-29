@@ -5,28 +5,13 @@ from django.db import models
 from menu.models import Product
 
 
-# =========================================================
-# تولید کد سفارش
-# =========================================================
-
 def generate_order_code():
-    """
-    تولید یک کد ۴ رقمی تصادفی برای سفارش.
-    """
+    """تولید کد ۴ رقمی سفارش"""
+    return str(random.randint(2000, 9999))
 
-    return str(
-        random.randint(2000, 9999)
-    )
-
-
-# =========================================================
-# مدل اصلی سفارش
-# =========================================================
 
 class Order(models.Model):
-    """
-    مدل اصلی سفارش مشتری.
-    """
+    """مدل اصلی سفارش مشتری"""
 
     STATUS_CHOICES = (
         ("pending", "در انتظار بررسی باریستا"),
@@ -34,6 +19,13 @@ class Order(models.Model):
         ("ready", "آماده تحویل"),
         ("completed", "تحویل داده شد"),
         ("canceled", "لغو شده"),
+    )
+
+    PAYMENT_STATUS_CHOICES = (
+        ("unpaid", "پرداخت نشده"),
+        ("pending", "در انتظار پرداخت"),
+        ("paid", "پرداخت موفق"),
+        ("failed", "پرداخت ناموفق"),
     )
 
     order_code = models.CharField(
@@ -62,6 +54,33 @@ class Order(models.Model):
         verbose_name="مبلغ کل",
     )
 
+    # وضعیت پرداخت سفارش
+    payment_status = models.CharField(
+        max_length=20,
+        choices=PAYMENT_STATUS_CHOICES,
+        default="unpaid",
+        verbose_name="وضعیت پرداخت",
+    )
+
+    # کد Authority درگاه
+    # در نسخه واقعی توسط زرین‌پال تولید می‌شود.
+    authority = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        unique=True,
+        verbose_name="Authority",
+    )
+
+    # شماره پیگیری پرداخت
+    # در نسخه واقعی توسط زرین‌پال برمی‌گردد.
+    ref_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Ref ID",
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name="زمان ثبت سفارش",
@@ -73,20 +92,11 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return (
-            f"سفارش {self.order_code} - "
-            f"{self.customer_name}"
-        )
+        return f"سفارش {self.order_code} - {self.customer_name}"
 
-
-# =========================================================
-# آیتم‌های داخل سفارش
-# =========================================================
 
 class OrderItem(models.Model):
-    """
-    محصولات موجود داخل یک سفارش.
-    """
+    """آیتم‌های داخل هر سفارش"""
 
     order = models.ForeignKey(
         Order,
@@ -106,9 +116,6 @@ class OrderItem(models.Model):
         verbose_name="تعداد",
     )
 
-    # قیمت محصول در لحظه ثبت سفارش
-    # تا تغییر قیمت محصول در آینده
-    # روی سفارش‌های قبلی تأثیر نگذارد.
     price = models.DecimalField(
         max_digits=10,
         decimal_places=0,
@@ -120,111 +127,4 @@ class OrderItem(models.Model):
         verbose_name_plural = "آیتم‌های سفارش"
 
     def __str__(self):
-        return (
-            f"{self.quantity} عدد "
-            f"{self.product.title}"
-        )
-
-
-# =========================================================
-# مدل پرداخت
-# =========================================================
-
-class Payment(models.Model):
-    """
-    اطلاعات پرداخت مربوط به یک سفارش.
-
-    هر سفارش یک پرداخت دارد.
-    """
-
-    STATUS_CHOICES = (
-        ("pending", "در انتظار پرداخت"),
-        ("success", "پرداخت موفق"),
-        ("failed", "پرداخت ناموفق"),
-        ("canceled", "لغو شده"),
-    )
-
-    # -----------------------------------------------------
-    # ارتباط پرداخت با سفارش
-    # -----------------------------------------------------
-
-    order = models.OneToOneField(
-        Order,
-        on_delete=models.CASCADE,
-        related_name="payment",
-        verbose_name="سفارش",
-    )
-
-    # -----------------------------------------------------
-    # مبلغ پرداخت
-    # -----------------------------------------------------
-
-    amount = models.DecimalField(
-        max_digits=12,
-        decimal_places=0,
-        verbose_name="مبلغ پرداخت",
-    )
-
-    # -----------------------------------------------------
-    # وضعیت پرداخت
-    # -----------------------------------------------------
-
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default="pending",
-        verbose_name="وضعیت پرداخت",
-    )
-
-    # -----------------------------------------------------
-    # Authority / شناسه‌ای که درگاه برمی‌گرداند
-    # -----------------------------------------------------
-
-    authority = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        unique=True,
-        verbose_name="شناسه پرداخت درگاه",
-    )
-
-    # -----------------------------------------------------
-    # شماره تراکنش نهایی
-    # -----------------------------------------------------
-
-    transaction_id = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name="شماره تراکنش",
-    )
-
-    # -----------------------------------------------------
-    # زمان ایجاد پرداخت
-    # -----------------------------------------------------
-
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="زمان ایجاد پرداخت",
-    )
-
-    # -----------------------------------------------------
-    # زمان تأیید پرداخت
-    # -----------------------------------------------------
-
-    verified_at = models.DateTimeField(
-        blank=True,
-        null=True,
-        verbose_name="زمان تأیید پرداخت",
-    )
-
-    class Meta:
-        verbose_name = "پرداخت"
-        verbose_name_plural = "پرداخت‌ها"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return (
-            f"پرداخت سفارش "
-            f"{self.order.order_code}"
-        )
+        return f"{self.quantity} عدد {self.product.title}"

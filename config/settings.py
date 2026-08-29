@@ -185,3 +185,8 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# تنظیمات مربوط به زرین‌پال
+ZARINPAL_MERCHANT_ID = config(
+    "ZARINPAL_MERCHANT_ID"
+)

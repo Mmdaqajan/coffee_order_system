@@ -1,4 +1,8 @@
+from decimal import Decimal
+
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.generics import (
@@ -13,11 +17,16 @@ from rest_framework.views import APIView
 
 from menu.models import Product
 
-from .models import Order
+from .models import Order, Payment
 from .serializers import (
     OrderCreateSerializer,
     OrderDetailSerializer,
     OrderStatusUpdateSerializer,
+)
+
+from .services import (
+    create_payment_request,
+    verify_payment,
 )
 
 
@@ -29,13 +38,34 @@ class OrderCreateAPIView(CreateAPIView):
     """
     ثبت سفارش جدید.
 
-    این View زمانی استفاده می‌شود که مشتری در صفحه Checkout
-    سفارش خود را نهایی می‌کند.
+    این View در صفحه Checkout استفاده می‌شود.
+
+    بعد از ساخت موفق سفارش، کد سفارش داخل Session
+    ذخیره می‌شود تا فقط همان کاربر بتواند پرداخت
+    سفارش خودش را شروع کند.
     """
 
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
     permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+
+        # -------------------------------------------------
+        # ساخت سفارش
+        # -------------------------------------------------
+
+        order = serializer.save()
+
+        # -------------------------------------------------
+        # ذخیره کد سفارش در Session کاربر
+        # -------------------------------------------------
+
+        self.request.session["last_order_code"] = (
+            order.order_code
+        )
+
+        self.request.session.modified = True
 
 
 # =========================================================
@@ -44,14 +74,14 @@ class OrderCreateAPIView(CreateAPIView):
 
 class OrderDetailAPIView(RetrieveAPIView):
     """
-    نمایش وضعیت و جزئیات سفارش با استفاده از کد سفارش.
+    نمایش وضعیت و جزئیات سفارش
+    با استفاده از کد سفارش.
     """
 
     queryset = Order.objects.all()
     serializer_class = OrderDetailSerializer
 
-    # چون order_code در مدل CharField است،
-    # باید str باشد نه int.
+    # order_code در مدل CharField است.
     lookup_field = "order_code"
 
     permission_classes = [AllowAny]
@@ -74,7 +104,10 @@ class BaristaOrderListAPIView(ListAPIView):
         # سفارش‌های تکمیل‌شده و لغوشده
         # در لیست سفارش‌های فعال نمایش داده نمی‌شوند.
         return Order.objects.exclude(
-            status__in=["completed", "canceled"]
+            status__in=[
+                "completed",
+                "canceled",
+            ]
         )
 
 
@@ -103,7 +136,7 @@ def get_session_cart(request):
     """
     سبد خرید فعلی کاربر را از Session می‌خواند.
 
-    ساختار Session به این شکل است:
+    ساختار Session:
 
     {
         "1": 2,
@@ -111,11 +144,15 @@ def get_session_cart(request):
     }
 
     یعنی:
+
     محصول شماره 1 → تعداد 2
     محصول شماره 3 → تعداد 1
     """
 
-    return request.session.get("cart", {})
+    return request.session.get(
+        "cart",
+        {},
+    )
 
 
 def save_session_cart(request, cart):
@@ -125,32 +162,38 @@ def save_session_cart(request, cart):
 
     request.session["cart"] = cart
 
-    # مشخص می‌کنیم Session تغییر کرده است
+    # مشخص می‌کنیم Session تغییر کرده
     # تا Django آن را ذخیره کند.
     request.session.modified = True
 
 
 def build_cart_response(cart):
     """
-    اطلاعات کامل محصولات موجود در سبد را از دیتابیس می‌گیرد
-    و برای API آماده می‌کند.
+    اطلاعات کامل محصولات موجود در سبد را
+    از دیتابیس می‌گیرد و برای API آماده می‌کند.
     """
 
     if not cart:
+
         return {
             "items": [],
             "count": 0,
             "total": 0,
         }
 
+    # -----------------------------------------------------
     # ID محصولات موجود در Session
+    # -----------------------------------------------------
+
     product_ids = [
         int(product_id)
         for product_id in cart.keys()
     ]
 
-    # فقط محصولاتی را می‌گیریم که واقعاً در دیتابیس
-    # وجود دارند و موجود هستند.
+    # -----------------------------------------------------
+    # دریافت محصولات معتبر
+    # -----------------------------------------------------
+
     products = Product.objects.filter(
         id__in=product_ids,
         is_available=True,
@@ -161,10 +204,17 @@ def build_cart_response(cart):
     total = 0
     count = 0
 
+    # -----------------------------------------------------
+    # ساخت اطلاعات هر محصول
+    # -----------------------------------------------------
+
     for product in products:
 
         quantity = int(
-            cart.get(str(product.id), 0)
+            cart.get(
+                str(product.id),
+                0,
+            )
         )
 
         if quantity <= 0:
@@ -177,18 +227,25 @@ def build_cart_response(cart):
         total += item_total
         count += quantity
 
-        items.append({
-            "product_id": product.id,
-            "title": product.title,
-            "price": product.price,
-            "quantity": quantity,
-            "item_total": item_total,
-            "image": (
-                product.image.url
-                if product.image
-                else None
-            ),
-        })
+        items.append(
+            {
+                "product_id": product.id,
+
+                "title": product.title,
+
+                "price": product.price,
+
+                "quantity": quantity,
+
+                "item_total": item_total,
+
+                "image": (
+                    product.image.url
+                    if product.image
+                    else None
+                ),
+            }
+        )
 
     return {
         "items": items,
@@ -241,18 +298,23 @@ class CartAddAPIView(APIView):
 
     def post(self, request):
 
-        # دریافت ID محصول از درخواست
+        # -------------------------------------------------
+        # دریافت اطلاعات
+        # -------------------------------------------------
+
         product_id = request.data.get(
             "product_id"
         )
 
-        # تعداد پیش‌فرض یک است.
         quantity = request.data.get(
             "quantity",
-            1
+            1,
         )
 
-        # بررسی وجود product_id
+        # -------------------------------------------------
+        # بررسی product_id
+        # -------------------------------------------------
+
         if not product_id:
 
             return Response(
@@ -263,19 +325,28 @@ class CartAddAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # -------------------------------------------------
         # پیدا کردن محصول
+        # -------------------------------------------------
+
         product = get_object_or_404(
             Product,
             id=product_id,
             is_available=True,
         )
 
+        # -------------------------------------------------
         # تبدیل quantity به عدد
+        # -------------------------------------------------
+
         try:
 
             quantity = int(quantity)
 
-        except (TypeError, ValueError):
+        except (
+            TypeError,
+            ValueError,
+        ):
 
             return Response(
                 {
@@ -285,7 +356,10 @@ class CartAddAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # تعداد باید حداقل یک باشد.
+        # -------------------------------------------------
+        # تعداد حداقل باید یک باشد
+        # -------------------------------------------------
+
         if quantity < 1:
 
             return Response(
@@ -296,28 +370,46 @@ class CartAddAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # -------------------------------------------------
         # دریافت سبد فعلی
-        cart = get_session_cart(request).copy()
+        # -------------------------------------------------
 
-        product_key = str(product.id)
+        cart = get_session_cart(
+            request
+        ).copy()
 
-        # اگر محصول قبلاً داخل سبد باشد،
-        # تعداد آن افزایش پیدا می‌کند.
+        product_key = str(
+            product.id
+        )
+
+        # -------------------------------------------------
+        # افزایش تعداد محصول
+        # -------------------------------------------------
+
         current_quantity = int(
-            cart.get(product_key, 0)
+            cart.get(
+                product_key,
+                0,
+            )
         )
 
         cart[product_key] = (
             current_quantity + quantity
         )
 
+        # -------------------------------------------------
         # ذخیره سبد
+        # -------------------------------------------------
+
         save_session_cart(
             request,
-            cart
+            cart,
         )
 
-        # برگرداندن سبد به‌روز شده
+        # -------------------------------------------------
+        # برگرداندن سبد جدید
+        # -------------------------------------------------
+
         return Response(
             build_cart_response(cart),
             status=status.HTTP_200_OK,
@@ -354,7 +446,14 @@ class CartUpdateAPIView(APIView):
             "quantity"
         )
 
-        if not product_id or quantity is None:
+        # -------------------------------------------------
+        # بررسی ورودی
+        # -------------------------------------------------
+
+        if (
+            not product_id
+            or quantity is None
+        ):
 
             return Response(
                 {
@@ -364,11 +463,18 @@ class CartUpdateAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # -------------------------------------------------
+        # تبدیل quantity
+        # -------------------------------------------------
+
         try:
 
             quantity = int(quantity)
 
-        except (TypeError, ValueError):
+        except (
+            TypeError,
+            ValueError,
+        ):
 
             return Response(
                 {
@@ -378,23 +484,34 @@ class CartUpdateAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        cart = get_session_cart(request).copy()
+        # -------------------------------------------------
+        # دریافت سبد
+        # -------------------------------------------------
 
-        product_key = str(product_id)
+        cart = get_session_cart(
+            request
+        ).copy()
 
-        # اگر تعداد صفر یا کمتر شود،
-        # محصول از سبد حذف می‌شود.
+        product_key = str(
+            product_id
+        )
+
+        # -------------------------------------------------
+        # اگر تعداد صفر یا کمتر باشد،
+        # محصول حذف می‌شود.
+        # -------------------------------------------------
+
         if quantity <= 0:
 
             cart.pop(
                 product_key,
-                None
+                None,
             )
 
         else:
 
-            # مطمئن می‌شویم محصول واقعاً وجود دارد.
-            product = get_object_or_404(
+            # مطمئن می‌شویم محصول وجود دارد.
+            get_object_or_404(
                 Product,
                 id=product_id,
                 is_available=True,
@@ -402,9 +519,13 @@ class CartUpdateAPIView(APIView):
 
             cart[product_key] = quantity
 
+        # -------------------------------------------------
+        # ذخیره سبد
+        # -------------------------------------------------
+
         save_session_cart(
             request,
-            cart
+            cart,
         )
 
         return Response(
@@ -447,17 +568,30 @@ class CartRemoveAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        cart = get_session_cart(request).copy()
+        # -------------------------------------------------
+        # دریافت سبد
+        # -------------------------------------------------
 
-        # حذف محصول از Session
+        cart = get_session_cart(
+            request
+        ).copy()
+
+        # -------------------------------------------------
+        # حذف محصول
+        # -------------------------------------------------
+
         cart.pop(
             str(product_id),
-            None
+            None,
         )
+
+        # -------------------------------------------------
+        # ذخیره سبد
+        # -------------------------------------------------
 
         save_session_cart(
             request,
-            cart
+            cart,
         )
 
         return Response(
@@ -483,7 +617,7 @@ class CartClearAPIView(APIView):
         # قرار دادن سبد خالی در Session
         save_session_cart(
             request,
-            {}
+            {},
         )
 
         return Response(
@@ -492,4 +626,410 @@ class CartClearAPIView(APIView):
                 "count": 0,
                 "total": 0,
             }
+        )
+
+
+# =========================================================
+# ایجاد درخواست پرداخت
+# =========================================================
+
+class PaymentCreateAPIView(APIView):
+    """
+    ایجاد درخواست پرداخت برای سفارش.
+
+    POST /api/orders/payment/create/
+
+    ورودی:
+
+    {
+        "order_code": "5432"
+    }
+
+    مبلغ از Order خوانده می‌شود
+    و کاربر نمی‌تواند مبلغ را از Frontend تعیین کند.
+    """
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        # -------------------------------------------------
+        # دریافت کد سفارش
+        # -------------------------------------------------
+
+        order_code = request.data.get(
+            "order_code"
+        )
+
+        if not order_code:
+
+            return Response(
+                {
+                    "detail":
+                        "order_code is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # -------------------------------------------------
+        # بررسی اینکه این سفارش متعلق
+        # به همین Session است.
+        # -------------------------------------------------
+
+        session_order_code = request.session.get(
+            "last_order_code"
+        )
+
+        if str(session_order_code) != str(
+            order_code
+        ):
+
+            return Response(
+                {
+                    "detail":
+                        "You cannot pay for this order."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # -------------------------------------------------
+        # دریافت سفارش
+        # -------------------------------------------------
+
+        order = get_object_or_404(
+            Order,
+            order_code=order_code,
+        )
+
+        # -------------------------------------------------
+        # اگر قبلاً پرداخت شده باشد،
+        # دوباره درخواست پرداخت ایجاد نمی‌کنیم.
+        # -------------------------------------------------
+
+        if hasattr(order, "payment"):
+
+            payment = order.payment
+
+            if payment.status == "success":
+
+                return Response(
+                    {
+                        "detail":
+                            "This order has already been paid."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        else:
+
+            # -------------------------------------------------
+            # ساخت Payment
+            # -------------------------------------------------
+
+            payment = Payment.objects.create(
+                order=order,
+                amount=order.total_price,
+                status="pending",
+            )
+
+        # -------------------------------------------------
+        # تبدیل تومان به ریال
+        #
+        # قیمت‌های پروژه ما تومان هستند.
+        # زرین‌پال مبلغ را ریالی دریافت می‌کند.
+        # -------------------------------------------------
+
+        amount_rial = (
+            Decimal(payment.amount) * Decimal("10")
+        )
+
+        # -------------------------------------------------
+        # ساخت Callback URL
+        # -------------------------------------------------
+
+        callback_url = request.build_absolute_uri(
+            reverse(
+                "payment-callback"
+            )
+        )
+
+        # -------------------------------------------------
+        # ارسال درخواست به زرین‌پال
+        # -------------------------------------------------
+
+        try:
+
+            result = create_payment_request(
+                amount=amount_rial,
+                description=(
+                    f"پرداخت سفارش "
+                    f"{order.order_code}"
+                ),
+                callback_url=callback_url,
+            )
+
+        except Exception as error:
+
+            payment.status = "failed"
+
+            payment.save(
+                update_fields=[
+                    "status",
+                ]
+            )
+
+            return Response(
+                {
+                    "detail": str(error),
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        # -------------------------------------------------
+        # ذخیره Authority
+        # -------------------------------------------------
+
+        payment.authority = result[
+            "authority"
+        ]
+
+        payment.status = "pending"
+
+        payment.save(
+            update_fields=[
+                "authority",
+                "status",
+            ]
+        )
+
+        # -------------------------------------------------
+        # ارسال لینک درگاه به Frontend
+        # -------------------------------------------------
+
+        return Response(
+            {
+                "order_code":
+                    order.order_code,
+
+                "amount":
+                    payment.amount,
+
+                "authority":
+                    payment.authority,
+
+                "payment_url":
+                    result["payment_url"],
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+# =========================================================
+# Callback زرین‌پال
+# =========================================================
+
+class PaymentCallbackAPIView(APIView):
+    """
+    Callback درگاه زرین‌پال.
+
+    بعد از پرداخت، زرین‌پال کاربر را
+    به این URL برمی‌گرداند.
+
+    سپس تراکنش را در Backend Verify می‌کنیم.
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+
+        # -------------------------------------------------
+        # دریافت اطلاعات از زرین‌پال
+        # -------------------------------------------------
+
+        authority = request.GET.get(
+            "Authority"
+        )
+
+        payment_status = request.GET.get(
+            "Status"
+        )
+
+        # -------------------------------------------------
+        # اگر اطلاعات callback ناقص باشد
+        # -------------------------------------------------
+
+        if not authority:
+
+            return Response(
+                {
+                    "detail":
+                        "Authority is missing."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # -------------------------------------------------
+        # پیدا کردن Payment
+        # -------------------------------------------------
+
+        payment = get_object_or_404(
+            Payment,
+            authority=authority,
+        )
+
+        order = payment.order
+
+        # -------------------------------------------------
+        # اگر کاربر پرداخت را لغو کرده باشد
+        # -------------------------------------------------
+
+        if payment_status != "OK":
+
+            payment.status = "canceled"
+
+            payment.save(
+                update_fields=[
+                    "status",
+                ]
+            )
+
+            return Response(
+                {
+                    "detail":
+                        "Payment was canceled.",
+                    "order_code":
+                        order.order_code,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # -------------------------------------------------
+        # تبدیل مبلغ سفارش از تومان به ریال
+        # -------------------------------------------------
+
+        amount_rial = (
+            Decimal(payment.amount)
+            * Decimal("10")
+        )
+
+        # -------------------------------------------------
+        # Verify واقعی با زرین‌پال
+        # -------------------------------------------------
+
+        try:
+
+            result = verify_payment(
+                authority=authority,
+                amount=amount_rial,
+            )
+
+        except Exception as error:
+
+            payment.status = "failed"
+
+            payment.save(
+                update_fields=[
+                    "status",
+                ]
+            )
+
+            return Response(
+                {
+                    "detail":
+                        str(error),
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        # -------------------------------------------------
+        # پرداخت تأیید نشد
+        # -------------------------------------------------
+
+        if not result["success"]:
+
+            payment.status = "failed"
+
+            payment.save(
+                update_fields=[
+                    "status",
+                ]
+            )
+
+            return Response(
+                {
+                    "detail":
+                        "Payment verification failed.",
+
+                    "code":
+                        result.get("code"),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # -------------------------------------------------
+        # پرداخت با موفقیت تأیید شد
+        # -------------------------------------------------
+
+        payment.status = "success"
+
+        payment.transaction_id = (
+            result.get("ref_id")
+        )
+
+        payment.verified_at = timezone.now()
+
+        payment.save(
+            update_fields=[
+                "status",
+                "transaction_id",
+                "verified_at",
+            ]
+        )
+
+        # -------------------------------------------------
+        # پرداخت موفق است.
+        #
+        # وضعیت سفارش را pending نگه می‌داریم؛
+        # چون pending در پروژه ما به معنی
+        # در انتظار بررسی باریستا است.
+        # -------------------------------------------------
+
+        # -------------------------------------------------
+        # پاک کردن سبد خرید Session
+        # -------------------------------------------------
+
+        save_session_cart(
+            request,
+            {},
+        )
+
+        # -------------------------------------------------
+        # پاک کردن کد سفارش از Session
+        # -------------------------------------------------
+
+        request.session.pop(
+            "last_order_code",
+            None,
+        )
+
+        request.session.modified = True
+
+        # -------------------------------------------------
+        # انتقال کاربر به صفحه موفقیت
+        # -------------------------------------------------
+
+        return Response(
+            {
+                "success": True,
+
+                "message":
+                    "Payment successful.",
+
+                "order_code":
+                    order.order_code,
+
+                "transaction_id":
+                    payment.transaction_id,
+            },
+            status=status.HTTP_200_OK,
         )

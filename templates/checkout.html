@@ -1,28 +1,15 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Coffee House</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        ثبت سفارش | Coffee House
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/style.css' %}"
-    >
-
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 
 <body>
 
@@ -30,112 +17,121 @@
 
     <div class="checkout-container">
 
-        <div class="checkout-header">
+        <!-- ==================== Header ==================== -->
 
-            <a
-                href="/cart/"
-                class="back-link"
-            >
-                ← بازگشت به سبد خرید
-            </a>
+        <header class="checkout-header">
+            <a href="/cart/" class="back-link">← Back to Cart</a>
+            <h1>Checkout</h1>
+        </header>
 
 
-            <h1>
-                ثبت سفارش
-            </h1>
+        <!-- ==================== Loading ==================== -->
 
+        <div id="checkout-loading" class="checkout-loading">
+            Loading order information...
         </div>
 
 
-        <section class="checkout-section">
+        <!-- ==================== Error ==================== -->
 
-            <h2>
-                اطلاعات سفارش
-            </h2>
-
-
-            <form
-                id="checkout-form"
-            >
-
-                <div class="form-group">
-
-                    <label
-                        for="customer-name"
-                    >
-                        نام شما
-                    </label>
+        <div id="checkout-error" class="checkout-error" style="display: none;">
+            <p id="checkout-error-message"></p>
+            <a href="/cart/" class="back-to-cart">Back to Cart</a>
+        </div>
 
 
-                    <input
-                        type="text"
-                        id="customer-name"
-                        name="customer_name"
-                        placeholder="نام خود را وارد کنید"
-                        autocomplete="name"
-                        required
-                    >
+        <!-- ==================== Checkout Content ==================== -->
 
+        <div id="checkout-content" style="display: none;">
+
+            <!-- ==================== Order Summary ==================== -->
+
+            <section class="checkout-section">
+
+                <h2>Order Summary</h2>
+
+                <div id="checkout-items" class="checkout-items">
+                    <!-- محصولات توسط checkout.js از API قرار می‌گیرند -->
                 </div>
-
-
-                <h2>
-                    خلاصه سفارش
-                </h2>
-
-
-                <div
-                    id="checkout-items"
-                >
-
-                    <!-- Cart items -->
-
-                </div>
-
 
                 <div class="checkout-total">
-
-                    <span>
-                        مبلغ نهایی
-                    </span>
-
-
-                    <strong
-                        id="checkout-total"
-                    >
-                        0 تومان
-                    </strong>
-
+                    <span>Total</span>
+                    <strong id="checkout-total">0 Toman</strong>
                 </div>
 
-
-                <button
-                    type="submit"
-                    class="checkout-button"
-                    id="submit-order"
-                >
-                    ثبت سفارش
-                </button>
-
-            </form>
-
-        </section>
+            </section>
 
 
-        <div
-            id="checkout-message"
-            class="checkout-message"
-        ></div>
+            <!-- ==================== Customer Information ==================== -->
+
+            <section class="checkout-section">
+
+                <h2>Customer Information</h2>
+
+                <form id="checkout-form">
+
+                    <div class="form-group">
+                        <label for="customer-name">
+                            Name / Table Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customer-name"
+                            name="customer_name"
+                            placeholder="Enter your name or table number"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+
+                    <!-- ==================== Payment ==================== -->
+
+                    <div class="payment-info">
+
+                        <h3>Payment</h3>
+
+                        <p>
+                            You will be redirected to ZarinPal
+                            to complete your payment securely.
+                        </p>
+
+                        <div class="payment-method">
+                            <span>Payment Gateway</span>
+                            <strong>ZarinPal</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== Submit ==================== -->
+
+                    <button
+                        type="submit"
+                        id="payment-button"
+                        class="checkout-button"
+                    >
+                        Proceed to Payment
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
 
     </div>
 
 </main>
 
 
-<script
-    src="{% static 'js/checkout.js' %}"
-></script>
+<!-- ==================== JavaScript ==================== -->
+
+<script src="{% static 'js/cart.js' %}"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
 
 </body>
 
 </html>
+

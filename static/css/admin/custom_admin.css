@@ -1,0 +1,162 @@
+/* =========================================================
+Coffee House - Django Admin Custom CSS
+========================================================= */
+
+:root {
+--coffee-dark: #3b2720;
+--coffee-medium: #6f4e37;
+--coffee-light: #a67c52;
+--coffee-cream: #f7f3ef;
+}
+
+/* =========================================================
+BRAND
+========================================================= */
+
+.brand-link {
+display: flex !important;
+align-items: center;
+justify-content: center;
+padding: 15px 10px !important;
+}
+
+.brand-text {
+font-size: 20px;
+font-weight: 700;
+letter-spacing: .3px;
+}
+
+/* =========================================================
+SIDEBAR
+========================================================= */
+
+.main-sidebar {
+background: var(--coffee-dark) !important;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+background-color: var(--coffee-medium) !important;
+}
+
+.nav-sidebar .nav-link {
+border-radius: 8px;
+margin: 3px 8px;
+transition: .2s ease;
+}
+
+.nav-sidebar .nav-link:hover {
+background-color: rgba(255, 255, 255, .1);
+}
+
+/* =========================================================
+NAVBAR
+========================================================= */
+
+.main-header {
+border-bottom: 1px solid #e8e1db !important;
+}
+
+.navbar-white {
+background-color: #ffffff !important;
+}
+
+/* =========================================================
+CONTENT
+========================================================= */
+
+.content-wrapper {
+background-color: var(--coffee-cream) !important;
+}
+
+.content-header h1 {
+font-weight: 700;
+}
+
+/* =========================================================
+CARDS
+========================================================= */
+
+.card {
+border: none !important;
+border-radius: 12px !important;
+box-shadow: 0 5px 20px rgba(59, 39, 32, .07);
+}
+
+.card-header {
+border-radius: 12px 12px 0 0 !important;
+}
+
+/* =========================================================
+TABLE
+========================================================= */
+
+.table {
+background: #ffffff;
+}
+
+.table thead th {
+font-weight: 700;
+}
+
+.table tbody tr {
+transition: .15s ease;
+}
+
+.table tbody tr:hover {
+background-color: #faf7f4;
+}
+
+/* =========================================================
+BUTTONS
+========================================================= */
+
+.btn-primary {
+background-color: var(--coffee-medium) !important;
+border-color: var(--coffee-medium) !important;
+}
+
+.btn-primary:hover {
+background-color: var(--coffee-dark) !important;
+border-color: var(--coffee-dark) !important;
+}
+
+/* =========================================================
+FORMS
+========================================================= */
+
+.form-control,
+.custom-select {
+border-radius: 8px !important;
+border: 1px solid #ddd4cc !important;
+}
+
+.form-control:focus,
+.custom-select:focus {
+border-color: var(--coffee-light) !important;
+box-shadow: 0 0 0 .15rem rgba(166, 124, 82, .15) !important;
+}
+
+/* =========================================================
+FOOTER
+========================================================= */
+
+.main-footer {
+background: #ffffff;
+border-top: 1px solid #e8e1db;
+}
+
+/* =========================================================
+RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+.content-wrapper {
+    padding-bottom: 20px;
+}
+
+.brand-text {
+    font-size: 17px;
+}
+
+}

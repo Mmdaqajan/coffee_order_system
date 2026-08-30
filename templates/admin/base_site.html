@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}مدیریت Coffee House{% endblock %}
+
+{% block branding %}
+
+<div class="brand-link">
+    <span class="brand-text">☕ Coffee House</span>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+
+<link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+{% endblock %}

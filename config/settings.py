@@ -196,7 +196,7 @@ SIMPLE_JWT = {
 
 #jazmin - configuration for admin panned
 JAZZMIN_SETTINGS = {
-    "site_title": "مدیریت Coffee House",
+    "site_title": "Coffee House Admin",
     "site_header": "Coffee House",
     "site_brand": "☕ Coffee House",
     "welcome_sign": "خوش آمدید به پنل مدیریت Coffee House",
@@ -214,9 +214,45 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": True,
 
     "show_ui_builder": False,
+
+    # آیکون‌های منوی پنل
+    "icons": {
+        "accounts": "fas fa-users",
+        "menu": "fas fa-mug-hot",
+        "menu.Category": "fas fa-layer-group",
+        "menu.Product": "fas fa-coffee",
+        "orders": "fas fa-receipt",
+        "orders.Order": "fas fa-shopping-cart",
+        "orders.OrderItem": "fas fa-list",
+        "auth": "fas fa-user-shield",
+        "auth.User": "fas fa-user",
+        "auth.Group": "fas fa-users-cog",
+    },
+
+    # ترتیب نمایش اپ‌ها
+    "order_with_respect_to": [
+        "orders",
+        "menu",
+        "accounts",
+        "auth",
+    ],
+
+    "topmenu_links": [
+        {
+            "name": "صفحه اصلی",
+            "url": "/",
+            "permissions": ["auth.view_user"],
+        },
+    ],
+
+    "usermenu_links": [
+        {
+            "name": "صفحه اصلی سایت",
+            "url": "/",
+            "new_window": False,
+        },
+    ],
 }
-
-
 JAZZMIN_UI_TWEAKS = {
     "theme": "flatly",
     "dark_mode_theme": "darkly",
@@ -241,4 +277,7 @@ JAZZMIN_UI_TWEAKS = {
         "danger": "btn-danger",
         "success": "btn-success",
     },
+
+    "actions_sticky_top": True,
+    "related_modal_active": True,
 }

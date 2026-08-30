@@ -25,6 +25,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(','
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -121,9 +122,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "fa-ir"
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Tehran"
 
 USE_I18N = True
 
@@ -190,3 +193,52 @@ SIMPLE_JWT = {
 # ZARINPAL_MERCHANT_ID = config(
 #     "ZARINPAL_MERCHANT_ID"
 # )
+
+#jazmin - configuration for admin panned
+JAZZMIN_SETTINGS = {
+    "site_title": "مدیریت Coffee House",
+    "site_header": "Coffee House",
+    "site_brand": "☕ Coffee House",
+    "welcome_sign": "خوش آمدید به پنل مدیریت Coffee House",
+    "copyright": "Coffee House",
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "hide_models": [],
+    "hide_apps": [],
+
+    "custom_links": {},
+
+    "changeform_format": "horizontal_tabs",
+    "related_modal_active": True,
+
+    "show_ui_builder": False,
+}
+
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
+
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+
+    "navbar_fixed": True,
+    "sidebar_fixed": True,
+
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+}

@@ -13,6 +13,7 @@ from .views import (
     CartUpdateAPIView,
     CartRemoveAPIView,
     CartClearAPIView,
+    barista_dashboard,
 )
 
 
@@ -46,4 +47,5 @@ urlpatterns = [
     # پنل باریستا
     path("barista/list/", BaristaOrderListAPIView.as_view(), name="barista-order-list"),
     path("barista/update/<str:order_code>/", BaristaOrderStatusUpdateAPIView.as_view(), name="barista-order-update"),
+    path("barista/", barista_dashboard, name="barista-dashboard"),
 ]

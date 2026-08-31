@@ -1,4 +1,7 @@
 import uuid
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404, render
 from menu.models import Product
 from rest_framework.generics import (
@@ -183,15 +186,31 @@ class BaristaOrderListAPIView(ListAPIView):
 
 
 class BaristaOrderStatusUpdateAPIView(UpdateAPIView):
-    """تغییر وضعیت سفارش توسط باریستا"""
-
     queryset = Order.objects.all()
-
     serializer_class = OrderStatusUpdateSerializer
-
     permission_classes = [IsAdminUser]
-
     lookup_field = "order_code"
+
+    def update(self, request, *args, **kwargs):
+        order = self.get_object()
+
+        serializer = self.get_serializer(
+            order,
+            data=request.data,
+            partial=True,
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "success": True,
+                "order_code": order.order_code,
+                "status": order.status,
+                "status_display": order.get_status_display(),
+            }
+        )
 
 class CartAPIView(APIView):
     """نمایش سبد خرید فعلی"""
@@ -343,3 +362,27 @@ class CartClearAPIView(APIView):
         return Response({
             "detail": "سبد خرید خالی شد.",
         })
+
+
+
+
+
+@login_required(login_url="/accounts/login/")
+def barista_dashboard(request):
+    if not hasattr(request.user, "profile"):
+        return redirect("/")
+
+    if request.user.profile.role != "barista":
+        return redirect("/")
+
+    orders = Order.objects.exclude(
+        status__in=["completed", "canceled"]
+    ).prefetch_related("items__product")
+
+    return render(
+        request,
+        "barista/dashboard.html",
+        {
+            "orders": orders,
+        },
+    )

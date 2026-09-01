@@ -13,11 +13,11 @@ from .views import (
     OrderCreateAPIView,
     OrderDetailAPIView,
     PaymentStartAPIView,
+    barista_dashboard,
 )
 
 
 urlpatterns = [
-    path("", barista_dashboard, name="barista-dashboard"),
     path("create/", OrderCreateAPIView.as_view(), name="order-create"),
     path("status/<str:order_code>/", OrderDetailAPIView.as_view(), name="order-status"),
     path("cart/", CartAPIView.as_view(), name="cart"),
@@ -27,15 +27,8 @@ urlpatterns = [
     path("cart/clear/", CartClearAPIView.as_view(), name="cart-clear"),
     path("payment/start/", PaymentStartAPIView.as_view(), name="payment-start"),
     path("payment/mock/<str:authority>/", MockPaymentPageView.as_view(), name="payment-mock"),
-    path(
-        "payment/mock/<str:authority>/result/",
-        MockPaymentResultAPIView.as_view(),
-        name="mock-payment-result",
-    ),
+    path("payment/mock/<str:authority>/result/", MockPaymentResultAPIView.as_view(), name="mock-payment-result"),
     path("barista/list/", BaristaOrderListAPIView.as_view(), name="barista-order-list"),
-    path(
-        "barista/update/<str:order_code>/",
-        BaristaOrderStatusUpdateAPIView.as_view(),
-        name="barista-order-update",
-    ),
+    path("barista/update/<str:order_code>/", BaristaOrderStatusUpdateAPIView.as_view(), name="barista-order-update"),
+    path("barista/", barista_dashboard, name="barista-dashboard"),
 ]

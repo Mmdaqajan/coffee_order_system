@@ -65,3 +65,23 @@ class BaristaOrderStatusUpdateAPIView(UpdateAPIView):
     lookup_field = "order_code"
 
     
+
+@login_required(login_url="/barista/login/")
+def barista_dashboard(request):
+    if not hasattr(request.user, "profile"):
+        return redirect("/")
+
+    if request.user.profile.role != "barista":
+        return redirect("/")
+
+    orders = Order.objects.exclude(
+        status__in=["completed", "canceled"]
+    ).prefetch_related("items__product")
+
+    return render(
+        request,
+        "dashboard.html",
+        {
+            "orders": orders,
+        },
+    )

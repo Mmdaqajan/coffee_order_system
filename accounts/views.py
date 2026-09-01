@@ -4,11 +4,6 @@ from django.shortcuts import redirect, render
 
 
 def barista_login(request):
-    """
-    ورود باریستا با نام کاربری و رمز عبور Django.
-    """
-
-    # اگر کاربر از قبل وارد شده باشد، مستقیماً به پنل باریستا می‌رود.
     if request.user.is_authenticated:
         if hasattr(request.user, "profile") and request.user.profile.role == "barista":
             return redirect("barista-dashboard")
@@ -19,7 +14,6 @@ def barista_login(request):
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
 
-        # بررسی نام کاربری و رمز عبور توسط سیستم احراز هویت Django.
         user = authenticate(
             request,
             username=username,
@@ -35,17 +29,6 @@ def barista_login(request):
                 },
             )
 
-        # فقط حساب‌هایی که Role آنها barista است اجازه ورود دارند.
-        if not hasattr(user, "profile") or user.profile.role != "barista":
-            return render(
-                request,
-                "accounts/barista_login.html",
-                {
-                    "error": "این حساب، حساب باریستا نیست.",
-                },
-            )
-
-        # حساب غیرفعال اجازه ورود ندارد.
         if not user.is_active:
             return render(
                 request,
@@ -55,7 +38,15 @@ def barista_login(request):
                 },
             )
 
-        # ساخت Session برای کاربر.
+        if not hasattr(user, "profile") or user.profile.role != "barista":
+            return render(
+                request,
+                "accounts/barista_login.html",
+                {
+                    "error": "این حساب، حساب باریستا نیست.",
+                },
+            )
+
         login(request, user)
 
         return redirect("barista-dashboard")
@@ -68,10 +59,5 @@ def barista_login(request):
 
 @login_required(login_url="/barista/login/")
 def barista_logout(request):
-    """
-    خروج باریستا از Session.
-    """
-
     logout(request)
-
     return redirect("barista-login")

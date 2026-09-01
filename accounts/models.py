@@ -8,8 +8,19 @@ class UserProfile(models.Model):
         ("barista", "باریستا"),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", verbose_name="کاربر")
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="barista", verbose_name="نقش")
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="profile",
+        verbose_name="کاربر",
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default="barista",
+        verbose_name="نقش",
+    )
 
     class Meta:
         verbose_name = "پروفایل کاربر"

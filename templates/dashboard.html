@@ -2,18 +2,27 @@
 
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>پنل باریستا | Coffee House</title>
 
-    <link rel="stylesheet" href="{% static 'css/barista.css' %}">
+    <link
+        rel="stylesheet"
+        href="{% static 'css/barista.css' %}"
+    >
 </head>
 
 <body>
 
 <header class="barista-navbar">
+
     <div class="barista-container">
 
         <a href="/" class="barista-logo">
@@ -21,17 +30,19 @@
         </a>
 
         <div class="barista-user">
-            {{ request.user.username }}
 
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit">
-                    خروج
-                </button>
-            </form>
+            <span>
+                {{ request.user.username }}
+            </span>
+
+            <a href="{% url 'barista-logout' %}">
+                خروج
+            </a>
+
         </div>
 
     </div>
+
 </header>
 
 
@@ -40,7 +51,9 @@
     <div class="barista-container">
 
         <div class="barista-header">
+
             <div>
+
                 <span class="eyebrow">
                     BARISTA PANEL
                 </span>
@@ -48,7 +61,9 @@
                 <h1>
                     سفارش‌ها
                 </h1>
+
             </div>
+
         </div>
 
 
@@ -56,112 +71,122 @@
 
             {% for order in orders %}
 
-            <article class="order-card">
+                <article class="order-card">
 
-                <div class="order-card-header">
-
-                    <div>
-                        <span class="order-code">
-                            #{{ order.order_code }}
-                        </span>
-
-                        <h2>
-                            {{ order.customer_name }}
-                        </h2>
-                    </div>
-
-                    <span class="order-status status-{{ order.status }}">
-                        {{ order.get_status_display }}
-                    </span>
-
-                </div>
-
-
-                <div class="order-items">
-
-                    {% for item in order.items.all %}
-
-                    <div class="order-item">
+                    <div class="order-card-header">
 
                         <div>
-                            <strong>
-                                {{ item.product.title }}
-                            </strong>
 
-                            <span>
-                                × {{ item.quantity }}
+                            <span class="order-code">
+                                #{{ order.order_code }}
                             </span>
+
+                            <h2>
+                                {{ order.customer_name }}
+                            </h2>
+
+                        </div>
+
+                        <span class="order-status status-{{ order.status }}">
+                            {{ order.get_status_display }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-items">
+
+                        {% for item in order.items.all %}
+
+                            <div class="order-item">
+
+                                <div>
+
+                                    <strong>
+                                        {{ item.product.title }}
+                                    </strong>
+
+                                    <span>
+                                        × {{ item.quantity }}
+                                    </span>
+
+                                </div>
+
+                                <span>
+                                    {{ item.price }} تومان
+                                </span>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="order-footer">
+
+                        <strong>
+                            {{ order.total_price }} تومان
+                        </strong>
+
+                        <div class="order-actions">
+
+                            {% if order.status == "pending" %}
+
+                                <button
+                                    class="status-button"
+                                    onclick="updateOrderStatus('{{ order.order_code }}', 'preparing')"
+                                >
+                                    شروع آماده‌سازی
+                                </button>
+
+                            {% elif order.status == "preparing" %}
+
+                                <button
+                                    class="status-button"
+                                    onclick="updateOrderStatus('{{ order.order_code }}', 'ready')"
+                                >
+                                    آماده شد
+                                </button>
+
+                            {% elif order.status == "ready" %}
+
+                                <button
+                                    class="status-button"
+                                    onclick="updateOrderStatus('{{ order.order_code }}', 'completed')"
+                                >
+                                    تحویل داده شد
+                                </button>
+
+                            {% endif %}
+
                         </div>
 
                         <span>
-                            {{ item.price }} تومان
+                            {{ order.created_at|date:"H:i" }}
                         </span>
 
                     </div>
 
-                    {% endfor %}
-
-                </div>
-
-
-                <div class="order-footer">
-
-                    <strong>
-                        {{ order.total_price }} تومان
-                    </strong>
-
-                    <div class="order-actions">
-
-    {% if order.status == "pending" %}
-        <button
-            class="status-button"
-            onclick="updateOrderStatus('{{ order.order_code }}', 'preparing')"
-        >
-            شروع آماده‌سازی
-        </button>
-
-    {% elif order.status == "preparing" %}
-        <button
-            class="status-button"
-            onclick="updateOrderStatus('{{ order.order_code }}', 'ready')"
-        >
-            آماده شد
-        </button>
-
-    {% elif order.status == "ready" %}
-        <button
-            class="status-button"
-            onclick="updateOrderStatus('{{ order.order_code }}', 'completed')"
-        >
-            تحویل داده شد
-        </button>
-    {% endif %}
-
-</div>
-
-                    <span>
-                        {{ order.created_at|date:"H:i" }}
-                    </span>
-
-                </div>
-
-            </article>
+                </article>
 
             {% empty %}
 
-            <div class="empty-orders">
-                <div>
-                    ☕
+                <div class="empty-orders">
+
+                    <div>
+                        ☕
+                    </div>
+
+                    <h2>
+                        سفارشی وجود ندارد
+                    </h2>
+
+                    <p>
+                        در حال حاضر سفارش فعالی ندارید.
+                    </p>
+
                 </div>
-
-                <h2>
-                    سفارشی وجود ندارد
-                </h2>
-
-                <p>
-                    در حال حاضر سفارش فعالی ندارید.
-                </p>
-            </div>
 
             {% endfor %}
 
@@ -170,6 +195,9 @@
     </div>
 
 </main>
+
 <script src="{% static 'js/barista.js' %}"></script>
+
 </body>
+
 </html>

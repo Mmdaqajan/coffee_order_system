@@ -1,51 +1,41 @@
 from django.urls import path
 
 from .views import (
+    BaristaOrderListAPIView,
+    BaristaOrderStatusUpdateAPIView,
+    CartAddAPIView,
+    CartClearAPIView,
+    CartRemoveAPIView,
+    CartUpdateAPIView,
+    CartAPIView,
+    MockPaymentPageView,
+    MockPaymentResultAPIView,
     OrderCreateAPIView,
     OrderDetailAPIView,
     PaymentStartAPIView,
-    MockPaymentPageView,
-    MockPaymentResultAPIView,
-    BaristaOrderListAPIView,
-    BaristaOrderStatusUpdateAPIView,
-    CartAPIView,
-    CartAddAPIView,
-    CartUpdateAPIView,
-    CartRemoveAPIView,
-    CartClearAPIView,
-    barista_dashboard,
 )
 
 
 urlpatterns = [
-
-    # ثبت سفارش
+    path("", barista_dashboard, name="barista-dashboard"),
     path("create/", OrderCreateAPIView.as_view(), name="order-create"),
-
-    # پیگیری سفارش
     path("status/<str:order_code>/", OrderDetailAPIView.as_view(), name="order-status"),
-
-
-    # شروع پرداخت
-    path("payment/start/", PaymentStartAPIView.as_view(), name="payment-start"),
-
-    # صفحه پرداخت آزمایشی
-    path("payment/mock/<str:authority>/", MockPaymentPageView.as_view(), name="mock-payment"),
-
-    # نتیجه پرداخت آزمایشی
-    path("payment/mock/<str:authority>/result/", MockPaymentResultAPIView.as_view(), name="mock-payment-result"),
-
-
-    # سبد خرید
     path("cart/", CartAPIView.as_view(), name="cart"),
     path("cart/add/", CartAddAPIView.as_view(), name="cart-add"),
     path("cart/update/", CartUpdateAPIView.as_view(), name="cart-update"),
     path("cart/remove/", CartRemoveAPIView.as_view(), name="cart-remove"),
     path("cart/clear/", CartClearAPIView.as_view(), name="cart-clear"),
-
-
-    # پنل باریستا
+    path("payment/start/", PaymentStartAPIView.as_view(), name="payment-start"),
+    path("payment/mock/<str:authority>/", MockPaymentPageView.as_view(), name="payment-mock"),
+    path(
+        "payment/mock/<str:authority>/result/",
+        MockPaymentResultAPIView.as_view(),
+        name="mock-payment-result",
+    ),
     path("barista/list/", BaristaOrderListAPIView.as_view(), name="barista-order-list"),
-    path("barista/update/<str:order_code>/", BaristaOrderStatusUpdateAPIView.as_view(), name="barista-order-update"),
-    path("barista/", barista_dashboard, name="barista-dashboard"),
+    path(
+        "barista/update/<str:order_code>/",
+        BaristaOrderStatusUpdateAPIView.as_view(),
+        name="barista-order-update",
+    ),
 ]

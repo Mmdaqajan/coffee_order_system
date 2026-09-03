@@ -24,7 +24,7 @@ def barista_login(request):
         if user is None:
             return render(
                 request,
-                "accounts/barista_login.html",
+                "accounts/barista-login.html",
                 {
                     "error": "نام کاربری یا رمز عبور اشتباه است.",
                 },
@@ -33,7 +33,7 @@ def barista_login(request):
         if not user.is_active:
             return render(
                 request,
-                "accounts/barista_login.html",
+                "accounts/barista-login.html",
                 {
                     "error": "حساب کاربری شما غیرفعال است.",
                 },
@@ -42,7 +42,7 @@ def barista_login(request):
         if not hasattr(user, "profile") or user.profile.role != "barista":
             return render(
                 request,
-                "accounts/barista_login.html",
+                "accounts/barista-login.html",
                 {
                     "error": "این حساب، حساب باریستا نیست.",
                 },
@@ -54,7 +54,7 @@ def barista_login(request):
 
     return render(
         request,
-        "accounts/barista_login.html",
+        "accounts/barista-login.html",
     )
 
 

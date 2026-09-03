@@ -1,7 +1,7 @@
 async function updateOrderStatus(orderCode, status) {
     try {
         const response = await fetch(
-            `/orders/barista/update/${orderCode}/`,
+            `/api/orders/barista/update/${orderCode}/`,
             {
                 method: "PATCH",
                 headers: {

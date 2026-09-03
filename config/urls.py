@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from accounts.views import barista_login, barista_logout
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -12,6 +13,8 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("barista/login/", barista_login, name="barista-login"),
+    path("barista/logout/", barista_logout, name="barista-logout"),
     path("", include("menu.urls")),
     path("api/menu/", include("menu.api_urls")),
     path("api/orders/", include("orders.urls")),

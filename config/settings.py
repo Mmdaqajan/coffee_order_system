@@ -1,13 +1,9 @@
 from pathlib import Path
-import os
 from decouple import config
 from datetime import timedelta
 
 # مسیر ریشه پروژه (کنار manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# آدرس دقیق فایل .env
-env_path = BASE_DIR / '.env'
 
 
 # Quick-start development settings - unsuitable for production
@@ -19,7 +15,14 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in config(
+        "ALLOWED_HOSTS",
+        default="127.0.0.1,localhost",
+    ).split(",")
+]
 
 
 # Application definition
@@ -78,24 +81,27 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-if os.environ.get('DB_HOST'):
-    # تنظیمات هنگام اجرا در Docker (PostgreSQL)
+DB_ENGINE = config(
+    "DB_ENGINE",
+    default="django.db.backends.sqlite3",
+)
+
+if DB_ENGINE == "django.db.backends.sqlite3":
     DATABASES = {
-        'default': {
-            'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
-            'NAME': os.environ.get('DB_NAME', 'cafe_db'),
-            'USER': os.environ.get('DB_USER', 'cafe_user'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', 'cafe_password'),
-            'HOST': os.environ.get('DB_HOST', 'db'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
+        "default": {
+            "ENGINE": DB_ENGINE,
+            "NAME": BASE_DIR / config("DB_NAME", default="db.sqlite3"),
         }
     }
 else:
-    # تنظیمات هنگام اجرای مستقیم رو سیستم (SQLite)
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+        "default": {
+            "ENGINE": DB_ENGINE,
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST"),
+            "PORT": config("DB_PORT", default="5432"),
         }
     }
 
@@ -189,9 +195,11 @@ SIMPLE_JWT = {
 }
 
 # تنظیمات مربوط به زرین‌پال
-# ZARINPAL_MERCHANT_ID = config(
-#     "ZARINPAL_MERCHANT_ID"
-# )
+ZARINPAL_MERCHANT_ID = config(
+    "ZARINPAL_MERCHANT_ID",
+    default="",
+)
+
 
 #jazmin - configuration for admin panned
 JAZZMIN_SETTINGS = {
